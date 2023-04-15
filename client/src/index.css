@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .thin-scrollbar-y::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .thin-scrollbar-y::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .thin-scrollbar-y::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+  }
+
+  .thin-scrollbar-x::-webkit-scrollbar {
+    height: 0.5rem;
+  }
+  .thin-scrollbar-x::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .thin-scrollbar-x::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+  }
+}
