@@ -5,7 +5,7 @@ import { AuthContext } from "../contexts/authContext";
 export default function AuthRoute({ component }) {
   const { isLoggedIn } = useContext(AuthContext);
 
-  if (!isLoggedIn || true) {
+  if (!isLoggedIn) {
     return component;
   }
 
