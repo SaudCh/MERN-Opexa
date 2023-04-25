@@ -32,7 +32,8 @@ export default function Categories() {
                 name: data.name,
                 image: link,
                 inputs: [],
-                subcategories: []
+                subcategories: [],
+                isDeleted: false
             });
 
             if (docRef) {

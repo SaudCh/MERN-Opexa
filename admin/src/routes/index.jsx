@@ -18,6 +18,9 @@ import EditCategory from "../pages/category/edit";
 import SubCategories from "../pages/subcategory";
 import EditSubCategory from "../pages/subcategory/edit";
 import AddSubCategory from "../pages/subcategory/add";
+import FurtherCategories from "../pages/furthercategory";
+import AddFurtherCategory from "../pages/furthercategory/add";
+import EditFurtherCategory from "../pages/furthercategory/edit";
 
 const Layout = lazy(() => import("./layout"));
 
@@ -91,6 +94,21 @@ export default function AppRouter() {
             <Route
               path="/subcategory/:id"
               element={<ProtectedRoute component={<EditSubCategory />} />}
+            />
+
+            {/* Category */}
+            <Route
+              path="/furthercategories"
+              element={<ProtectedRoute component={<FurtherCategories />} />}
+            />
+            <Route
+              path="/furthercategory/add"
+              element={<ProtectedRoute component={<AddFurtherCategory />} />}
+            />
+
+            <Route
+              path="/furthercategory/:id"
+              element={<ProtectedRoute component={<EditFurtherCategory />} />}
             />
 
             {/* Users */}

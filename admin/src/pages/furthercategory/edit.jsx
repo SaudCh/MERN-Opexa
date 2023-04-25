@@ -1,23 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SelectInput, TextInput } from "../../components/InputFields";
-import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc, getDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
+import { collection, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 
 
-export default function EditCategory() {
+export default function EditFurtherCategory() {
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
     })
-    const [image, setImage] = useState(null)
-    const navigate = useNavigate()
     const { id } = useParams()
+    const [categories, setCategory] = useState([])
+    const [subcategories, setSubCategory] = useState([])
+
 
     const [inputs, setInput] = useState([{
         name: "",
@@ -45,20 +44,10 @@ export default function EditCategory() {
 
         setLoading(true)
 
-        let link = data.image
-
-        if (image) {
-            const blob = await fetch(image).then((res) => res.blob())
-            const storageRef = ref(storage, "/images/" + new Date().getTime())
-            const snapshot = await uploadBytes(storageRef, blob)
-            link = await getDownloadURL(snapshot.ref)
-        }
-
-        const category = doc(db, "categories", id);
+        const category = doc(db, "furthercategories", id);
 
         await updateDoc(category, {
-            name: data.name,
-            image: link
+            name: data.name
         });
 
         setLoading(false)
@@ -70,7 +59,7 @@ export default function EditCategory() {
 
         setLoading(true)
 
-        const category = doc(db, "categories", id);
+        const category = doc(db, "furthercategories", id);
 
         await updateDoc(category, {
             inputs
@@ -82,7 +71,7 @@ export default function EditCategory() {
     useEffect(() => {
 
         const getData = async () => {
-            const docRef = doc(db, "categories", id);
+            const docRef = doc(db, "furthercategories", id);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
@@ -100,10 +89,50 @@ export default function EditCategory() {
 
     }, [id])
 
+    useEffect(() => {
+        setLoading(true)
+        const unsubscribe = onSnapshot(collection(db, "categories"), (snapshot) => {
+            let data = []
+            snapshot.forEach((doc) => {
+                data.push({ value: doc.id, label: doc.data().name })
+            })
+            setCategory(data)
+        });
+
+        setLoading(false)
+
+        return unsubscribe
+
+    }, [])
+
+    useEffect(() => {
+
+        if (!data?.category?.id) return
+
+        setLoading(true)
+
+        const q = query(collection(db, "subcategories"), where("isDeleted", "==", false), where("category.id", "==", data.category.id));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            let data = []
+            snapshot.forEach((doc) => {
+                data.push({
+                    label: doc.data().name,
+                    value: doc.id
+                })
+            })
+            setSubCategory(data)
+        });
+
+        setLoading(false)
+
+        return unsubscribe
+
+    }, [data.category])
+
     return (
         <div className="px-6 ">
             <div className="my-4 flex flex-row justify-between px-4">
-                <h1 className=" text-2xl font-semibold mr-2">Edit Categories</h1>
+                <h1 className=" text-2xl font-semibold mr-2">Edit Sub Categories</h1>
 
                 <Link
                     to="/categories"
@@ -124,14 +153,6 @@ export default function EditCategory() {
                         Basic Info
                     </h3>
 
-                    <AddImage
-                        label="Image"
-                        name="image"
-                        className="w-full"
-                        setImage={setImage}
-                        link={data?.image}
-                    />
-
                     <TextInput
                         label="Name"
                         name="name"
@@ -140,6 +161,32 @@ export default function EditCategory() {
                         className="w-full"
                         value={data.name}
                         onChange={(e) => setData({ ...data, name: e.target.value })}
+                    />
+
+                    <SelectInput
+                        label="Category"
+                        name="category"
+                        className="w-full"
+                        options={categories}
+                        value={
+                            categories.find((e) => {
+                                return e?.value === data?.category?.id
+                            })
+                        }
+                        isDisabled={true}
+                    />
+
+                    <SelectInput
+                        label="Sub Category"
+                        name="subcategory"
+                        className="w-full"
+                        options={subcategories}
+                        value={
+                            subcategories.find((e) => {
+                                return e?.value === data?.subcategory?.id
+                            })
+                        }
+                        isDisabled={true}
                     />
 
                     <button

@@ -64,6 +64,7 @@ export const SelectInput = ({
   placeholder,
   value,
   error,
+  isDisabled
 }) => {
   return (
     <div className="py-2">
@@ -80,6 +81,7 @@ export const SelectInput = ({
         name={name}
         placeholder={placeholder}
         onChange={onChange}
+        isDisabled={isDisabled}
       />
       {error && <p className="errors">{error}</p>}
     </div>

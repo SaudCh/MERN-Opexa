@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import CategoryTable from "../../components/tables/category";
-import { collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { arrayRemove, collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
+import FurtherCategoryTable from "../../components/tables/furtherCategory";
 
 // import axios from "axios";
 
-export default function Categories() {
+export default function FurtherCategories() {
 
     const [data, setData] = useState([])
     const { setLoading } = useContext(LoadingContext)
 
     useEffect(() => {
         setLoading(true)
-        const q = query(collection(db, "categories"), where("isDeleted", "==", false));
+
+        const q = query(collection(db, "furthercategories"), where("isDeleted", "==", false));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let data = []
             snapshot.forEach((doc) => {
@@ -26,26 +27,24 @@ export default function Categories() {
 
         setLoading(false)
 
-        // unsubscribe();
-
         return unsubscribe
 
     }, [])
 
-    const deleteCategory = async (id) => {
+    const deleteCategory = async (id, cid) => {
         setLoading(true)
 
-        const categoryRef = doc(db, "categories", id);
+        const subcategoryRef = doc(db, "futhercategories", id);
 
-        await updateDoc(categoryRef, {
+        await updateDoc(subcategoryRef, {
             isDeleted: true
         });
 
-        // const categoryRef = doc(db, "categories", cid);
+        const categoryRef = doc(db, "subcategories", cid);
 
-        // await updateDoc(categoryRef, {
-        //     subcategories: arrayRemove(id)
-        // });
+        await updateDoc(categoryRef, {
+            subcategories: arrayRemove(id)
+        });
 
         setLoading(false)
     }
@@ -53,17 +52,17 @@ export default function Categories() {
     return (
         <div className="px-6 ">
             <div className="my-4 flex flex-row justify-between px-4">
-                <h1 className=" text-2xl font-semibold mr-2">Categories</h1>
+                <h1 className=" text-2xl font-semibold mr-2">Further Sub Categories</h1>
 
                 <Link
-                    to="/category/add"
+                    to="/furthercategory/add"
                     className="bg-blue-500 text-white px-2 py-1 rounded-md"
                 >
                     Add
                 </Link>
             </div>
 
-            <CategoryTable
+            <FurtherCategoryTable
                 data={data}
                 deleteCategory={deleteCategory}
             />

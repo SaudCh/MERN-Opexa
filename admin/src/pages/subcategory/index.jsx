@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CategoryTable from "../../components/tables/category";
-import { collection, onSnapshot } from "firebase/firestore";
+import { arrayRemove, collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
@@ -16,29 +16,45 @@ export default function SubCategories() {
 
     useEffect(() => {
         setLoading(true)
-        const unsubscribe = onSnapshot(collection(db, "subcategories"), (snapshot) => {
+
+        const q = query(collection(db, "subcategories"), where("isDeleted", "==", false));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             let data = []
             snapshot.forEach((doc) => {
-
                 data.push({ ...doc.data(), id: doc.id })
-
-            }
-            )
+            })
             setData(data)
         });
 
         setLoading(false)
 
-        // unsubscribe();
-
         return unsubscribe
 
     }, [])
 
-    const deleteCategory = async (id) => {
+    const deleteCategory = async (id, cid) => {
         setLoading(true)
 
-        await deleteDoc(doc(db, "categories", id));
+        const subcategoryRef = doc(db, "subcategories", id);
+
+        await updateDoc(subcategoryRef, {
+            isDeleted: true
+        });
+
+        const categoryRef = doc(db, "categories", cid);
+
+        await updateDoc(categoryRef, {
+            subcategories: arrayRemove(id)
+        });
+
+        // const q = query(collection(db, "subcategories"), where("subcategory", "==", id));
+        // const unsubscribe = onSnapshot(q, (snapshot) => {
+        //     let data = []
+        //     snapshot.forEach((doc) => {
+        //         data.push({ ...doc.data(), id: doc.id })
+        //     })
+        //     setData(data)
+        // });
 
         setLoading(false)
     }

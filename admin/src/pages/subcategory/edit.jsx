@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SelectInput, TextInput } from "../../components/InputFields";
-import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc, getDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
+import { collection, getDoc, onSnapshot } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 
 
-export default function EditSubCategory() {
+export default function EditCategory() {
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
@@ -18,6 +16,8 @@ export default function EditSubCategory() {
     const [image, setImage] = useState(null)
     const navigate = useNavigate()
     const { id } = useParams()
+    const [categories, setCategory] = useState([])
+
 
     const [inputs, setInput] = useState([{
         name: "",
@@ -45,20 +45,11 @@ export default function EditSubCategory() {
 
         setLoading(true)
 
-        let link = data.image
 
-        if (image) {
-            const blob = await fetch(image).then((res) => res.blob())
-            const storageRef = ref(storage, "/images/" + new Date().getTime())
-            const snapshot = await uploadBytes(storageRef, blob)
-            link = await getDownloadURL(snapshot.ref)
-        }
-
-        const category = doc(db, "categories", id);
+        const category = doc(db, "subcategories", id);
 
         await updateDoc(category, {
-            name: data.name,
-            image: link
+            name: data.name
         });
 
         setLoading(false)
@@ -70,7 +61,7 @@ export default function EditSubCategory() {
 
         setLoading(true)
 
-        const category = doc(db, "categories", id);
+        const category = doc(db, "subxcategories", id);
 
         await updateDoc(category, {
             inputs
@@ -82,12 +73,15 @@ export default function EditSubCategory() {
     useEffect(() => {
 
         const getData = async () => {
-            const docRef = doc(db, "categories", id);
+            const docRef = doc(db, "subcategories", id);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
                 setData(docSnap.data())
-                setInput(docSnap.data().inputs)
+
+                const inputs = docSnap.data().inputs
+
+                setInput(inputs)
             } else {
                 console.log("No such document!");
             }
@@ -97,10 +91,32 @@ export default function EditSubCategory() {
 
     }, [id])
 
+    useEffect(() => {
+        setLoading(true)
+        const unsubscribe = onSnapshot(collection(db, "categories"), (snapshot) => {
+            let data = []
+            snapshot.forEach((doc) => {
+                // data.push({ id: doc.id, ...doc.data() })
+                data.push({ value: doc.id, label: doc.data().name })
+            }
+            )
+
+            setCategory(data)
+
+        });
+
+        setLoading(false)
+
+        // unsubscribe();
+
+        return unsubscribe
+
+    }, [])
+
     return (
         <div className="px-6 ">
             <div className="my-4 flex flex-row justify-between px-4">
-                <h1 className=" text-2xl font-semibold mr-2">Edit Categories</h1>
+                <h1 className=" text-2xl font-semibold mr-2">Edit Sub Categories</h1>
 
                 <Link
                     to="/categories"
@@ -121,14 +137,6 @@ export default function EditSubCategory() {
                         Basic Info
                     </h3>
 
-                    <AddImage
-                        label="Image"
-                        name="image"
-                        className="w-full"
-                        setImage={setImage}
-                        link={data?.image}
-                    />
-
                     <TextInput
                         label="Name"
                         name="name"
@@ -137,6 +145,19 @@ export default function EditSubCategory() {
                         className="w-full"
                         value={data.name}
                         onChange={(e) => setData({ ...data, name: e.target.value })}
+                    />
+
+                    <SelectInput
+                        label="Category"
+                        name="category"
+                        className="w-full"
+                        options={categories}
+                        value={
+                            categories.find((e) => {
+                                return e?.value === data?.category?.id
+                            })
+                        }
+                        isDisabled={true}
                     />
 
                     <button
@@ -155,9 +176,20 @@ export default function EditSubCategory() {
                 onSubmit={submitInput}
             >
                 <div className="flex flex-col w-full md:w-2/3 border p-10 rounded mt-2">
-                    <h3 className="text-emerald-500">
-                        Inputs
-                    </h3>
+                    <div className="flex flex-row justify-between">
+                        <h3 className="text-emerald-500">
+                            Inputs
+                        </h3>
+
+                        <button
+                            type="button"
+                            onClick={incInputs}
+                        >
+                            <AiFillPlusCircle
+                                className="text-2xl text-emerald-500 ml-5"
+                            />
+                        </button>
+                    </div>
                     {
                         inputs.map((input, index) => {
 
@@ -172,26 +204,16 @@ export default function EditSubCategory() {
                                         onChange={(e) => handleChange(e, index)}
                                     />
                                 </div>
-                                {
-                                    index > 0 ? <button
-                                        type="button"
-                                        onClick={() => decInputs(index)}
-                                    >
-                                        <AiFillMinusCircle
-                                            className="text-2xl text-red-500 ml-5"
-                                        />
-                                    </button>
-                                        :
-                                        <button
-                                            type="button"
-                                            onClick={() => incInputs()}
-                                        >
-                                            <AiFillPlusCircle
-                                                className="text-2xl text-emerald-500 ml-5"
 
-                                            />
-                                        </button>
-                                }
+                                <button
+                                    type="button"
+                                    onClick={() => decInputs(index)}
+                                >
+                                    <AiFillMinusCircle
+                                        className="text-2xl text-red-500 ml-5"
+                                    />
+                                </button>
+
                             </div>)
                         })
                     }

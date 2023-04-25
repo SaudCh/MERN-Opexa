@@ -2,16 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SelectInput, TextInput } from "../../components/InputFields";
 import { db, storage } from "../../config/firebase";
-import { collection, addDoc, onSnapshot, updateDoc, arrayUnion, doc, where, query } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, updateDoc, arrayUnion, doc, where, query, and } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 
 
-export default function AddSubCategory() {
+export default function AddFurtherCategory() {
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
+        category: {},
+        subcategory: {}
     })
     const [categories, setCategory] = useState([])
+    const [subcategories, setSubCategory] = useState([])
     const navigate = useNavigate()
 
 
@@ -20,10 +23,10 @@ export default function AddSubCategory() {
 
         setLoading(true)
 
-        const docRef = await addDoc(collection(db, "subcategories"), {
+        const docRef = await addDoc(collection(db, "furthercategories"), {
             name: data.name,
             category: data.category,
-            subcategories: [],
+            subcategory: data.subcategory,
             inputs: [],
             isDeleted: false
         });
@@ -34,10 +37,16 @@ export default function AddSubCategory() {
             subcategories: arrayUnion(docRef.id)
         });
 
+        const subcategoryRef = doc(db, "subcategories", data?.subcategory?.id);
+
+        await updateDoc(subcategoryRef, {
+            subcategories: arrayUnion(docRef.id)
+        });
+
 
         if (docRef) {
             console.log("success");
-            navigate("/subcategories")
+            navigate("/furthercategories")
         }
 
         setLoading(false)
@@ -50,10 +59,12 @@ export default function AddSubCategory() {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let data = []
             snapshot.forEach((doc) => {
+
                 data.push({
-                    label: doc?.data()?.name,
+                    label: doc.data().name,
                     value: doc.id
                 })
+
             })
             setCategory(data)
         });
@@ -66,13 +77,37 @@ export default function AddSubCategory() {
 
     }, [])
 
+    useEffect(() => {
+
+        if (!data?.category?.id) return
+
+        setLoading(true)
+
+        const q = query(collection(db, "subcategories"), where("isDeleted", "==", false), where("category.id", "==", data.category.id));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            let data = []
+            snapshot.forEach((doc) => {
+                data.push({
+                    label: doc.data().name,
+                    value: doc.id
+                })
+            })
+            setSubCategory(data)
+        });
+
+        setLoading(false)
+
+        return unsubscribe
+
+    }, [data.category])
+
     return (
         <div className="px-6 ">
             <div className="my-4 flex flex-row justify-between px-4">
-                <h1 className=" text-2xl font-semibold mr-2">Add Sub Category</h1>
+                <h1 className=" md:text-2xl font-semibold mr-2">Add Further Sub Category</h1>
 
                 <Link
-                    to="/subcategories"
+                    to="/furthercategories"
                     className="bg-blue-500 text-white px-2 py-1 rounded-md"
                 >
                     All
@@ -102,6 +137,19 @@ export default function AddSubCategory() {
                         options={categories}
                         onChange={(e) => setData({
                             ...data, category: {
+                                id: e.value,
+                                label: e.label
+                            }
+                        })}
+                    />
+
+                    <SelectInput
+                        label="Sub Category"
+                        name="subcategory"
+                        className="w-full"
+                        options={subcategories}
+                        onChange={(e) => setData({
+                            ...data, subcategory: {
                                 id: e.value,
                                 label: e.label
                             }
