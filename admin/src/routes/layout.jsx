@@ -20,7 +20,7 @@ function Layout() {
   const { Logout } = useContext(AuthContext);
 
   const logout = () => {
-    // Logout();
+    Logout();
     navigate("/login");
   };
 
@@ -222,6 +222,10 @@ function Layout() {
 
           {/* Logout */}
           <li
+            role="button"
+            onClick={() =>
+              logout()
+            }
             className={` rounded-md text-gray-300  text-sm flex items-center gap-x-4 cursor-pointer hover:bg-light-white py-4 p-2`}
           >
             <span className="text-2xl block float-left">

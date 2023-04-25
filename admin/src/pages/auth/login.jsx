@@ -4,8 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/authContext";
 import LoadingSpinner from "../../components/spinner";
-import { auth } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function LoginP() {
   const navigate = useNavigate();
@@ -24,27 +25,27 @@ export default function LoginP() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password)
-      console.log(userCredential)
+      const user = userCredential.user;
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+
+        if (user.role != 'admin') throw ("You are not admin!")
+
+        Login(user);
+        navigate("/");
+
+      } else {
+        throw ("No user found!")
+      }
+
+
     } catch (error) {
-
+      const errorMessage = error.message;
+      setErrors({ api: errorMessage || error })
     }
-
-    // await signInWithEmailAndPassword(auth, data.email, data.password)
-    //   .then((userCredential) => {
-    //     const user = userCredential.user;
-
-    //     // get user form user 
-
-    //     Login(user);
-
-
-
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     setIsLoading(false)
-    //   });
 
 
     setIsLoading(false);
@@ -69,7 +70,7 @@ export default function LoginP() {
                     className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-3"
                     role="alert"
                   >
-                    <strong className="font-bold">Error!</strong>
+                    <strong className="font-bold">Error! </strong>
                     <span className="block sm:inline">{errors.api}</span>
                   </div>
                 )}
