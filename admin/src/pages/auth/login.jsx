@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/authContext";
 import LoadingSpinner from "../../components/spinner";
+import { auth } from "../../config/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginP() {
   const navigate = useNavigate();
@@ -17,35 +19,33 @@ export default function LoginP() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
 
     setIsLoading(true);
 
-    navigate("/");
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password)
+      console.log(userCredential)
+    } catch (error) {
 
-    // await axios
-    //   .post("user/login", data)
-    //   .then((res) => {
-    //     if (res.data.role === "admin") {
-    //       const user = res.data;
-    //       Login(
-    //         {
-    //           id: user.userId,
-    //           email: user.email,
-    //         },
-    //         user.token
-    //       );
-    //       navigate("/");
-    //       return;
-    //     }
+    }
 
-    //     throw new Error("You are not authorized to access this page");
+    // await signInWithEmailAndPassword(auth, data.email, data.password)
+    //   .then((userCredential) => {
+    //     const user = userCredential.user;
+
+    //     // get user form user 
+
+    //     Login(user);
+
+
+
     //   })
-    //   .catch((err) => {
-    //     let error = {};
-    //     error.api = err?.response?.data?.message || err.message;
-    //     setErrors(error);
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     setIsLoading(false)
     //   });
+
 
     setIsLoading(false);
   };
@@ -109,12 +109,6 @@ export default function LoginP() {
                   <button className="inline-block px-7 py-2 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
                     Login
                   </button>
-                  <Link
-                    to="/register"
-                    className="inline-block px-7 py-2 ml-2 border border-solid border-blue-600 text-blue-600 font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out hover:cursor-pointer"
-                  >
-                    Register
-                  </Link>
                 </div>
               </form>
             </div>

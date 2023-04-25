@@ -45,7 +45,7 @@ function App() {
 
   const [loading, setLoading] = React.useState(false);
 
-  const { user, role, token, Login, Logout } = useAuth();
+  const { user, Login, Logout } = useAuth();
   return (
     <LoadingContext.Provider
       value={{
@@ -56,8 +56,6 @@ function App() {
       <AuthContext.Provider
         value={{
           isLoggedIn: !!user,
-          role: role,
-          token: token,
           user: user,
           Login: Login,
           Logout: Logout,
