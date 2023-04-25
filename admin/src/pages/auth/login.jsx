@@ -32,7 +32,9 @@ export default function LoginP() {
 
       if (docSnap.exists()) {
 
-        if (user.role != 'admin') throw ("You are not admin!")
+        const data = docSnap.data()
+
+        if (data.role != 'admin') throw ("You are not admin!")
 
         Login(user);
         navigate("/");
