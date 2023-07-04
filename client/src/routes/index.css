@@ -1,0 +1,8 @@
+.sidebar {
+    transition: all 0.2s ease-in;
+}
+
+.hidden-link {
+    transition: display 1s ease-in;
+}
+  

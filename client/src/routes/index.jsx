@@ -1,44 +1,25 @@
-import { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
-import AuthRoute from "./AuthRoute";
-import ProtectedRoute from "./ProtectedRoute";
-// import AuthRoutes from "./AuthRoutes";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+  Routes,
+} from "react-router-dom";
+import React from "react";
 
-const Home = lazy(() => import("../screens/home"));
+import Home from "../pages/home";
+import Layout from "./layout";
 
-const Router = () => {
-  return (
-    <Suspense
-      fallback={
-        <div className="fixed top-0 left-0 flex h-screen w-full items-center justify-center"></div>
-      }
-    >
+export default function AppRoutes() {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
       <Routes>
-        {/* <Route
-          path="auth/*"
-          element={<AuthRoute component={<AuthRoutes />} />}
-        /> */}
-        <Route path="/" element={<Home />} />
-        {/* <Route path="collections/:id" element={<Collection />} />
-        <Route path="search" element={<Search />} />
-        <Route path="products/:id" element={<Product />} />
-        <Route path="products/c/:id" element={<Customize />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="checkout" element={<Checkout />} />
-        <Route
-          path="account"
-          element={<ProtectedRoute component={<Account />} />}
-        />
-
-        <Route
-          path="wishlist"
-          element={<ProtectedRoute component={<Wishlist />} />}
-        />
-
-        <Route path="*" element={<NotFound />} /> */}
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
       </Routes>
-    </Suspense>
+    )
   );
-};
 
-export default Router;
+  return <RouterProvider router={router} />;
+}
