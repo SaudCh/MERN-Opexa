@@ -13,11 +13,11 @@ import Layout from "./layout";
 export default function AppRoutes() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Routes>
-        <Route path="/" element={<Layout />}>
+      <Route>
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
         </Route>
-      </Routes>
+      </Route>
     )
   );
 
