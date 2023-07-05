@@ -27,7 +27,7 @@ function Home() {
       <div className="home-back">
         <div
           className=" grid grid-cols-1 md:grid-cols-2 text-center flex-wrap ml-2 md:ml-32 items-center  justify-center "
-          style={{ minHeight: "70vh" }}
+          style={{ minHeight: "50vh" }}
         >
           <div className="">
             <h1 className=" text-xl md:text-3xl  font-medium text-green-600 mb-2 text-center">
