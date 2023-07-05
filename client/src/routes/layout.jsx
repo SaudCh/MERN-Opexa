@@ -1,33 +1,83 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 function Layout() {
+  const [open, setopen] = useState(false);
+  const toggle = () => {
+    setopen(!open);
+  };
+
   return (
     <div>
+      <nav className="border-b border-gray-200">
+        <div className="flex flex-row justify-between mx-5 py-0.5 px-2">
+          <div>
+            <span className="border-x p-2 border-gray-200 text-xs font-thin text-gray-500">
+              spot@opxa.com
+            </span>
+            <span className="border-r p-2 border-gray-200 text-xs font-thin text-gray-500">
+              090078601
+            </span>
+          </div>
+          <div className="flex flex-row">
+            <span className="border-x p-2 border-gray-200 text-xs font-thin text-gray-500">
+              Welcome to Store
+            </span>
+            <div className="border-r border-gray-200">
+              <select
+                className=" border-none  outline-none text-gray-600 font-thin  text-xs  "
+                name
+                id
+              >
+                <option>English</option>
+                <option>Urdu</option>
+                <option>French</option>
+              </select>
+            </div>
+
+            <div className="border-r border-gray-200">
+              <select
+                className=" border-none outline-none text-gray-600 font-thin  text-xs  "
+                name
+                id
+              >
+                <option>Dollar</option>
+                <option>Pounds</option>
+                <option>Pkr</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </nav>
       <header className="bg-white">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           {/* logo */}
           <div className="">
             <span className="self-center text-3xl font-bold whitespace-nowrap">
-              Opexa{" "}
+              Opxa{" "}
             </span>
           </div>
           {/* search */}
           <div className="w-full max-w-xs xl:max-w-lg 2xl:max-w-2xl rounded-md hidden xl:flex items-center">
-            <select
-              className="bg-transparent border-gray-300 uppercase font-bold text-sm p-2 "
-              name
-              id
-            >
-              <option>all categories</option>
-            </select>
             <input
-              className="border-l border-gray-300 w-[400px] bg-transparent font-semibold text-sm pl-4"
+              className="border-l border-gray-200 text-gray-600 w-[400px] bg-transparent  text-sm pl-4"
               type="text"
               placeholder="I'm searching for ..."
             />
+            <select
+              className="bg-transparent  border-gray-200 text-gray-600 font-thin  text-sm p-2 "
+              name
+              id
+            >
+              <option>All Categories</option>
+              <option>All Categories</option>
+              <option>All Categories</option>
+              <option>All Categories</option>
+              <option>All Categories</option>
+              <option>All Categories</option>
+            </select>
             <svg
-              className="ml-auto h-9  px-4 text-white bg-green-600 py-2"
+              className="ml-auto h-[38px]  px-4 text-white bg-green-600 py-2"
               aria-hidden="true"
               focusable="false"
               data-prefix="far"
@@ -48,7 +98,7 @@ function Layout() {
               <li className="ml-2 lg:ml-4 relative inline-block">
                 <a className href>
                   <svg
-                    className="h-9 lg:h-10 p-2 text-gray-500"
+                    className="h-9 lg:h-10 p-2 text-black"
                     aria-hidden="true"
                     focusable="false"
                     data-prefix="far"
@@ -66,11 +116,11 @@ function Layout() {
               </li>
               <li className="ml-2 lg:ml-4 relative inline-block">
                 <a className href>
-                  <div className="absolute -top-1 right-0 z-10 bg-yellow-400 text-xs font-bold px-1 py-0.5 rounded-sm">
+                  <div className="absolute -top-1 right-0 z-10 text-white bg-green-500 text-xs  px-1.5 py-0.5 rounded-sm">
                     3
                   </div>
                   <svg
-                    className="h-9 lg:h-10 p-2 text-gray-500"
+                    className="h-9 lg:h-10 p-2 text-black"
                     aria-hidden="true"
                     focusable="false"
                     data-prefix="far"
@@ -98,8 +148,8 @@ function Layout() {
         <nav className="border-gray-200">
           <div className=" flex flex-wrap  items-center ">
             <a href="#" className="flex mr-4 py-1 md:mr-8">
-              <span className="self-center text-lg font-semibold whitespace-nowrap">
-                Opexa{" "}
+              <span className="self-center text-lg font-semibold whitespace-nowrap hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0">
+                Opxa{" "}
               </span>
             </a>
             <button
@@ -138,19 +188,26 @@ function Layout() {
             <div className="hidden md:block w-full md:w-auto" id="mobile-menu ">
               <ul className="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
                 <li>
-                  <a href="#" className="text-white" aria-current="page">
+                  <a
+                    href="#"
+                    className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
+                    aria-current="page"
+                  >
                     Home
                   </a>
                 </li>
-                <li>
+                <li className="relative">
                   <button
                     id="dropdownNavbarLink"
                     data-dropdown-toggle="dropdownNavbar"
-                    className="text-white hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0 font-medium flex items-center justify-between w-full md:w-auto"
+                    className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0 font-medium flex items-center justify-between w-full md:w-auto"
+                    onClick={toggle}
                   >
                     Dropdown{" "}
                     <svg
-                      className="w-4 h-4 ml-1"
+                      className={`w-4 h-4 ml-1 ${
+                        open ? "transform rotate-180" : ""
+                      }`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -163,50 +220,56 @@ function Layout() {
                     </svg>
                   </button>
                   {/* Dropdown menu */}
-                  <div
-                    id="dropdownNavbar"
-                    className="hidden bg-white text-base z-10 list-none divide-y divide-gray-100 rounded shadow my-4 w-44"
-                  >
-                    <ul className="py-1" aria-labelledby="dropdownLargeButton">
-                      <li>
-                        <a
-                          href="#"
-                          className="text-sm hover:bg-gray-100 text-white block px-4 py-2"
-                        >
-                          Dashboard
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-sm hover:bg-gray-100 text-white block px-4 py-2"
-                        >
-                          Settings
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-sm hover:bg-gray-100 text-white block px-4 py-2"
-                        >
-                          Earnings
-                        </a>
-                      </li>
-                    </ul>
-                    <div className="py-1">
-                      <a
-                        href="#"
-                        className="text-sm hover:bg-gray-100 text-white block px-4 py-2"
+                  {open && (
+                    <div
+                      id="dropdownNavbar"
+                      className="absolute right-0 mt-2 bg-white text-base z-10 list-none divide-y divide-gray-100 rounded shadow w-44"
+                    >
+                      <ul
+                        className="py-1"
+                        aria-labelledby="dropdownLargeButton"
                       >
-                        Sign out
-                      </a>
+                        <li>
+                          <a
+                            href="#"
+                            className="text-sm hover:bg-gray-100 text-gray-600 block px-4 py-2"
+                          >
+                            Dashboard
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            className="text-sm hover:bg-gray-100 text-gray-600 block px-4 py-2"
+                          >
+                            Settings
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="#"
+                            className="text-sm hover:bg-gray-100 text-gray-600 block px-4 py-2"
+                          >
+                            Earnings
+                          </a>
+                        </li>
+                      </ul>
+                      <div className="py-1">
+                        <a
+                          href="#"
+                          className="text-sm hover:bg-gray-100 text-gray-600 block px-4 py-2"
+                        >
+                          Sign out
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </li>
+
                 <li>
                   <a
                     href="#"
-                    className="text-white hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
+                    className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
                   >
                     Services
                   </a>
@@ -214,7 +277,7 @@ function Layout() {
                 <li>
                   <a
                     href="#"
-                    className="text-white hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
+                    className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
                   >
                     Pricing
                   </a>
@@ -222,7 +285,7 @@ function Layout() {
                 <li>
                   <a
                     href="#"
-                    className="text-white hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
+                    className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
                   >
                     Contact
                   </a>

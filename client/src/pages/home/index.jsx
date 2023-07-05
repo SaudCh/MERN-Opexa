@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../../components/home/productCard";
 import SmallCards from "../../components/home/smallCards";
 import RoundedCard from "../../components/home/roundedCard";
@@ -6,6 +6,22 @@ import Card from "../../components/home/card";
 import Footer from "../../components/footer/footer";
 import "./index.css";
 function Home() {
+  const [products, setproducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      setIsLoading(true);
+      await axios
+        .get("/products")
+        .then((res) => {
+          console.log(res?.data?.products);
+          setproducts(res?.data?.products);
+        })
+        .catch((err) => console.log(err));
+    };
+
+    getProducts();
+  }, []);
   return (
     <div className="">
       <div className="home-back">
