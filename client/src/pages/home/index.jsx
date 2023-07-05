@@ -29,7 +29,7 @@ function Home() {
           className=" grid grid-cols-1 md:grid-cols-2 text-center flex-wrap ml-2 md:ml-32 items-center  justify-center "
           style={{ minHeight: "70vh" }}
         >
-          <div className="mt-12">
+          <div className="">
             <h1 className=" text-xl md:text-3xl  font-medium text-green-600 mb-2 text-center">
               New Season
             </h1>
@@ -53,14 +53,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="md:mx-16 ml-[-20px] my-5 p-5 items-center justify-center grid grid-cols-2 md:grid-cols-6 xl:grid-cols-8  ">
-        <RoundedCard />
-        <RoundedCard />
-        <RoundedCard />
-        <RoundedCard />
-        <RoundedCard />
-        <RoundedCard />
-        <RoundedCard />
+      <div>
         <RoundedCard />
       </div>
 
@@ -70,19 +63,13 @@ function Home() {
         </h1>
 
         <div className="md:mx-12 p-5 my-5  ">
-          <div className="ml-32 md:ml-16 grid grid-cols-1 justify-center items-center gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ">
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+          <div>
             <ProductCard />
           </div>
         </div>
       </div>
 
-      <div className="md:mx-16 ml-12  mx-4  grid grid-cols-1 md:grid-cols-3   justify-center items-center gap-4">
-        <Card />
-        <Card />
+      <div>
         <Card />
       </div>
 
@@ -97,16 +84,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="p-10 grid grid-cols-1 justify-center items-center  md:grid-cols-5 ml-32 md:ml-16  gap-4">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+        <div className="p-10">
           <ProductCard />
         </div>
       </div>
