@@ -53,7 +53,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="my-5 p-5 items-center grid grid-cols-2 md:grid-cols-6 xl:grid-cols-8  gap-4">
+      <div className="md:mx-16 ml-[-20px] my-5 p-5 items-center justify-center grid grid-cols-2 md:grid-cols-6 xl:grid-cols-8  ">
         <RoundedCard />
         <RoundedCard />
         <RoundedCard />
@@ -69,33 +69,35 @@ function Home() {
           Deals of the day
         </h1>
 
-        <div className="p-10 grid grid-cols-1  md:grid-cols-5 ml-16  gap-4">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+        <div className="md:mx-12 p-5 my-5  ">
+          <div className="ml-32 md:ml-16 grid grid-cols-1 justify-center items-center gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ">
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 flex-row justify-center items-center gap-4">
+      <div className="md:mx-16 ml-12  mx-4  grid grid-cols-1 md:grid-cols-3   justify-center items-center gap-4">
         <Card />
         <Card />
         <Card />
       </div>
 
       <div>
-        <div className="flex flex-col md:flex-row justify-between p-5 mt-8 mb-[-10px] mx-5 border-b">
+        <div className="flex flex-col md:flex-row justify-between p-5 mt-8 mb-[-10px] mx-16 border-b">
           <button className="font-semibold text-lg">Fashion Products</button>
 
-          <div className="mr-12 flex flex-col md:flex-row items-center">
+          <div className="mr-12 flex flex-col md:flex-row items-center text-center">
             <button className="font-semibold">New Arrival</button>
             <button className="mx-4 font-semibold">Best Selling</button>
             <button className="font-semibold">Top Rated</button>
           </div>
         </div>
 
-        <div className="p-10 grid grid-cols-1  md:grid-cols-5 ml-16  gap-4">
+        <div className="p-10 grid grid-cols-1 justify-center items-center  md:grid-cols-5 ml-32 md:ml-16  gap-4">
           <ProductCard />
           <ProductCard />
           <ProductCard />
@@ -110,52 +112,56 @@ function Home() {
       </div>
 
       <div>
-        <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+        <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2 justify-center items-center md:ml-16 ml:32">
           <div className="rounded overflow-hidden  ">
-            <h1 className=" text-gray-900 font-semibold uppercase">
+            <h1 className=" text-gray-900 font-semibold uppercase text-center md:text-left">
               Featured Products
             </h1>
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
+            <div className="grid grid-cols-2 md:grid-cols-1">
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+            </div>
           </div>
-
           <div className="rounded overflow-hidden  ">
-            <h1 className=" text-gray-900 font-semibold uppercase">
+            <h1 className=" text-gray-900 font-semibold uppercase text-center md:text-left">
               Top rated Products
             </h1>
-
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
+            <div className="grid grid-cols-2 md:grid-cols-1">
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+            </div>
           </div>
 
           <div className="rounded overflow-hidden  ">
-            <h1 className=" text-gray-900 font-semibold uppercase">
+            <h1 className=" text-gray-900 font-semibold uppercase text-center md:text-left">
               Best Selling Products
             </h1>
-
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
+            <div className="grid grid-cols-2 md:grid-cols-1">
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+            </div>
           </div>
-
           <div className="rounded overflow-hidden  ">
-            <h1 className=" text-gray-900 font-semibold uppercase">
+            <h1 className=" text-gray-900 font-semibold uppercase text-center md:text-left">
               Latest Products
             </h1>
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
-            <SmallCards />
+            <div className="grid grid-cols-2 md:grid-cols-1">
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+              <SmallCards />
+            </div>
           </div>
         </div>
       </div>
-      <div className="bg-green-500 mb-5 w-full gap-6 p-5 py-10  text-white grid grid-cols-1 md:grid-cols-2 justify-between items-center">
-        <div>
+      <div className="bg-green-500 mb-5 w-full gap-6 p-5 py-10  text-white grid grid-cols-1 md:grid-cols-2 justify-between items-center ">
+        <div className="md:ml-16">
           <h1 className="text-lg font-semibold">
             Subscribe to Our News Letter
           </h1>
@@ -167,7 +173,7 @@ function Home() {
           {/* component */}
           {/* Creacte By Joker Banny */}
 
-          <form className="flex flex-row items-center">
+          <form className="flex flex-row items-center ">
             <div className="  rounded-lg overflow-hidden  px-4 py-2 ">
               <input
                 className="text-base text-gray-400   outline-none px-2 rounded-lg "

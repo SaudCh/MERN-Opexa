@@ -10,7 +10,7 @@ function Footer() {
     <div className="">
       <footer className="pl-5  sm:p-6 bg-white">
         <div className="flex justify-between items-center">
-          <div className="grid grid-cols-1 md:grid-cols-4 w-full">
+          <div className="grid grid-cols-2 md:grid-cols-4 w-full md:ml-16 ml-7 ">
             <div className="mb-6 sm:mb-1">
               <h2 className="mb-1 sm:mb-3 text-sm font-semibold text-gray-700 uppercase ">
                 Contact info

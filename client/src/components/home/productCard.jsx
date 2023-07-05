@@ -3,7 +3,7 @@ import React from "react";
 export default function ProductCard() {
   return (
     <div>
-      <div className="grid grid-cols-12 transform hover:scale-105  ">
+      <div className="grid grid-cols-12   ">
         <div className="col-span-1 sm:col-span-2" />
         <div className="col-span-12 sm:col-span-8 grid grid-cols-2 sm:grid-cols-4  justify-center items-center">
           <div className="flex justify-center">
@@ -17,12 +17,12 @@ export default function ProductCard() {
                           <img
                             data-src="https://assets.targetoptical.com/is/image/TargetOptical/8053672357936__001.png?imwidth=640"
                             alt="Men Black Shoes"
-                            className="img-responsive main lazypreload lazyloaded min-h-[200px] object-contain bg-slate-100"
+                            className="transform hover:scale-105  main lazypreload lazyloaded min-h-[200px] object-contain bg-slate-100"
                             src="https://assets.targetoptical.com/is/image/TargetOptical/8053672357936__001.png?imwidth=640"
                           />
 
                           <div className="overlay absolute inset-0 flex items-end  justify-center opacity-0 hover:opacity-100">
-                            <button className="bg-black w-[100%] text-white bg-transparent font-medium px-6 py-3 form-control">
+                            <button className="bg-black w-[100%] text-white  font-medium px-6 py-3 form-control">
                               Add to Cart
                             </button>
                           </div>

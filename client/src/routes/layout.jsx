@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
+import { CiMail } from "react-icons/ci";
+import { AiOutlinePhone } from "react-icons/ai";
+
 function Layout() {
   const [open, setopen] = useState(false);
   const toggle = () => {
@@ -11,12 +14,13 @@ function Layout() {
     <div>
       <nav className="border-b border-gray-200">
         <div className="flex flex-row justify-between mx-5 py-0.5 px-2">
-          <div>
-            <span className="border-x p-2 border-gray-200 text-xs font-thin text-gray-500">
+          <div className="flex flex-row">
+            <span className="border-x p-2 border-gray-200 text-xs font-thin text-gray-500 flex flex-row items-center">
+              <CiMail className="mr-1" />
               spot@opxa.com
             </span>
-            <span className="border-r p-2 border-gray-200 text-xs font-thin text-gray-500">
-              090078601
+            <span className="border-r p-2 border-gray-200 text-xs font-thin text-gray-500 flex flex-row items-center">
+              <AiOutlinePhone className="mr-1" /> 090078601
             </span>
           </div>
           <div className="flex flex-row">
@@ -77,7 +81,7 @@ function Layout() {
               <option>All Categories</option>
             </select>
             <svg
-              className="ml-auto h-[38px]  px-4 text-white bg-green-600 py-2"
+              className=" h-[38px]  px-4 text-white bg-green-600 py-2"
               aria-hidden="true"
               focusable="false"
               data-prefix="far"
