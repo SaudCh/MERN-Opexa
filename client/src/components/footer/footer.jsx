@@ -8,6 +8,35 @@ import React from "react";
 function Footer() {
   return (
     <div className="">
+      <div className="bg-green-500 mb-5 w-full gap-6 p-5 py-10  text-white grid grid-cols-1 md:grid-cols-2 justify-between items-center ">
+        <div className="md:ml-16">
+          <h1 className="text-lg font-semibold">
+            Subscribe to Our News Letter
+          </h1>
+          <span className="text-sm ">
+            Subscribe today and get special offers, coupons and news.
+          </span>
+        </div>
+        <div>
+          {/* component */}
+          {/* Creacte By Joker Banny */}
+
+          <form className="flex flex-row items-center ">
+            <div className="  rounded-lg overflow-hidden  px-4 py-2 ">
+              <input
+                className="text-base text-gray-400   outline-none px-2 rounded-lg "
+                type="text"
+                placeholder="Your Email Address "
+              />
+            </div>
+            <div className=" px-2 rounded-lg  ">
+              <button className="bg-indigo-500 text-white text-sm rounded-lg px-4 py-2 font-thin">
+                Subscribe
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
       <footer className="pl-5  sm:p-6 bg-white">
         <div className="flex justify-between items-center">
           <div className="grid grid-cols-2 md:grid-cols-4 w-full md:ml-16 ml-7 ">

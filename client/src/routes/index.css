@@ -5,4 +5,24 @@
 .hidden-link {
     transition: display 1s ease-in;
 }
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 150px;
+    top: calc(100% + 5px);
+    z-index: 1;
+  }
+  
+  .dropdown.open {
+    display: block;
+  }
+  
+  .dropdown ul {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .dropdown li {
+    list-style: none;
+  }
   

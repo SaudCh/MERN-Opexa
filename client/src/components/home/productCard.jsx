@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function ProductCard() {
   const details = [
@@ -73,10 +74,10 @@ export default function ProductCard() {
     },
   ];
   return (
-    <div className="ml-32 md:ml-16 grid grid-cols-1 justify-center items-center gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ">
+    <div className="ml-24 sm:32 md:ml-24 grid grid-cols-1 justify-center items-center gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       {details.map((detail) => {
         return (
-          <div className="grid grid-cols-12   ">
+          <div className="grid grid-cols-12" key={detail.id}>
             <div className="col-span-1 sm:col-span-2" />
             <div className="col-span-12 sm:col-span-8 grid grid-cols-2 sm:grid-cols-4  justify-center items-center">
               <div className="flex justify-center">
@@ -85,7 +86,7 @@ export default function ProductCard() {
                     <div className=" ">
                       <div className="product-inner">
                         <div className="product-image relative">
-                          <a>
+                          <Link to="/product/:id">
                             <div className="inner">
                               <img
                                 alt="Men Black Shoes"
@@ -99,7 +100,7 @@ export default function ProductCard() {
                                 </button>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </div>
 
                         <div className="product-content my-5 text-center">

@@ -2,16 +2,24 @@ import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 import { CiMail } from "react-icons/ci";
-import { AiOutlinePhone } from "react-icons/ai";
+import { AiOutlinePhone, AiOutlineRight } from "react-icons/ai";
+import { FaBars } from "react-icons/fa";
+import Footer from "../components/footer/footer";
 
 function Layout() {
   const [open, setopen] = useState(false);
+  const [user, setUser] = useState(false);
+
   const toggle = () => {
     setopen(!open);
   };
 
+  const toggleUser = () => {
+    setUser(!user);
+  };
+
   return (
-    <div>
+    <div className="">
       <nav className="border-b border-gray-200">
         <div className="flex flex-row justify-between mx-5 py-0.5 px-2">
           <div className="flex flex-row">
@@ -54,13 +62,14 @@ function Layout() {
         </div>
       </nav>
       <header className="bg-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className=" px-4 py-4 flex justify-between items-center">
           {/* logo */}
           <div className="">
             <span className="self-center text-3xl font-bold whitespace-nowrap">
               Opxa{" "}
             </span>
           </div>
+
           {/* search */}
           <div className="w-full max-w-xs xl:max-w-lg 2xl:max-w-2xl rounded-md hidden xl:flex items-center">
             <input
@@ -151,11 +160,83 @@ function Layout() {
       <div className="px-10 bg-green-400 text-white">
         <nav className="border-gray-200">
           <div className=" flex flex-wrap  items-center ">
-            <a href="#" className="flex mr-4 py-1 md:mr-8">
-              <span className="self-center text-lg font-semibold whitespace-nowrap hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0">
-                Opxa{" "}
-              </span>
-            </a>
+            <div className="relative mr-8 z-50">
+              <button
+                id="dropdownNavbarLink"
+                data-dropdown-toggle="dropdownNavbar"
+                className="text-#f8f9fa hover:bg-green-700 border-b border-gray-100 md:hover:bg-transparent md:border-0 pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0 font-medium flex items-center justify-between w-full md:w-auto"
+                onClick={toggleUser}
+              >
+                Opex
+                <FaBars className="ml-3" />
+              </button>
+              {/* Dropdown menu */}
+              {user && (
+                <div
+                  id="dropdownNavbar"
+                  className="absolute    bg-white text-base z-20 list-none divide-y divide-gray-100  shadow w-44 md:w-60 "
+                >
+                  <ul className="py-1" aria-labelledby="dropdownLargeButton">
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Men's Clothing
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Women's Clothing
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Bag Packs
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Shoes
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Jwellary
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        className="text-sm border-b hover:bg-gray-100 flex flex-row justify-between text-gray-600  px-4 py-2"
+                      >
+                        Men's Clothing
+                        <AiOutlineRight />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
             <button
               data-collapse-toggle="mobile-menu"
               type="button"
@@ -301,6 +382,7 @@ function Layout() {
       </div>
 
       <Outlet />
+      <Footer />
     </div>
   );
 }

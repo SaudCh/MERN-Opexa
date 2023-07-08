@@ -9,6 +9,7 @@ import React from "react";
 
 import Home from "../pages/home";
 import Layout from "./layout";
+import Checkout from "../pages/checkout";
 
 export default function AppRoutes() {
   const router = createBrowserRouter(
@@ -16,6 +17,7 @@ export default function AppRoutes() {
       <Route>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<Checkout />} />
         </Route>
       </Route>
     )

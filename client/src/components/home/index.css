@@ -3,5 +3,15 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    height: 100vh;
+    height: 50vh;
+}
+
+
+.home-back2{
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp76378eug36m8xy3-oLbZAshWKw_mOgK5Jg&usqp=CAU");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    height: 50vh;
 }
