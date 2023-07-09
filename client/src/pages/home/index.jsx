@@ -28,7 +28,7 @@ function Home() {
     <div className="">
       <Crousal />
 
-      <div>
+      <div className="p-5">
         <RoundedCard />
       </div>
 
@@ -37,10 +37,8 @@ function Home() {
           Deals of the day
         </h1>
 
-        <div className=" p-5 my-5  ">
-          <div className="flex justify-center">
-            <ProductCard />
-          </div>
+        <div className=" p-5   ">
+          <ProductCard />
         </div>
       </div>
 
@@ -59,13 +57,13 @@ function Home() {
           </div>
         </div>
 
-        <div className="p-10">
+        <div className="p-5">
           <ProductCard />
         </div>
       </div>
 
-      <div>
-        <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2 justify-center items-center md:ml-16 ml:32">
+      <div className="flex justify-center">
+        <div className="p-5 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap:12 md:gap-24  ">
           <div className="rounded overflow-hidden  ">
             <h1 className=" text-gray-900 font-semibold uppercase text-center md:text-left">
               Featured Products
