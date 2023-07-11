@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-import Footer from "../components/footer/footer";
 import CheckoutCard from "../components/checkout/checkout";
 
 function ProductLayout() {
@@ -77,7 +76,6 @@ function ProductLayout() {
         </nav>
       </div>
       <Outlet />
-      <Footer />
     </div>
   );
 }

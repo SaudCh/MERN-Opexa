@@ -20,9 +20,9 @@ function Layout() {
 
   return (
     <div className="">
-      <nav className="border-b border-gray-200">
+      <nav className="border-b border-gray-200" style={{ width: "100vw" }}>
         <div className="flex flex-row justify-between mx-5 py-0.5 px-2">
-          <div className="flex flex-row">
+          <div className="hidden md:flex flex-row">
             <span className="border-x p-2 border-gray-200 text-xs font-thin text-gray-500 flex flex-row items-center">
               <CiMail className="mr-1" />
               spot@opxa.com
@@ -65,9 +65,12 @@ function Layout() {
         <div className=" px-4 py-4 flex justify-between items-center">
           {/* logo */}
           <div className="">
-            <span className="self-center text-3xl font-bold whitespace-nowrap">
+            <Link
+              to="/"
+              className="self-center text-3xl font-bold whitespace-nowrap"
+            >
               Opxa{" "}
-            </span>
+            </Link>
           </div>
 
           {/* search */}
@@ -360,12 +363,12 @@ function Layout() {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/properties"
                     className="text-#f8f9fa hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
                   >
-                    Pricing
-                  </a>
+                    Properties
+                  </Link>
                 </li>
                 <li>
                   <a
