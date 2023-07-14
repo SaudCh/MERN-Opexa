@@ -21,6 +21,11 @@ import AddSubCategory from "../pages/subcategory/add";
 import FurtherCategories from "../pages/furthercategory";
 import AddFurtherCategory from "../pages/furthercategory/add";
 import EditFurtherCategory from "../pages/furthercategory/edit";
+import CryptoTransaction from "../pages/payments/cryptoTransaction";
+import OfflineTransaction from "../pages/payments/offlineTransaction";
+import Crypto from "../pages/payments/crypto";
+import AddCrypto from "../pages/payments/addCrypto";
+import EditCrypto from "../pages/payments/editCrypto";
 
 const Layout = lazy(() => import("./layout"));
 
@@ -131,6 +136,26 @@ export default function AppRouter() {
             <Route
               path="/payments"
               element={<ProtectedRoute component={<Payments />} />}
+            />
+            <Route
+              path="/offline-transactions"
+              element={<ProtectedRoute component={<OfflineTransaction />} />}
+            />
+            <Route
+              path="/crypto-transactions"
+              element={<ProtectedRoute component={<CryptoTransaction />} />}
+            />
+            <Route
+              path="/crypto"
+              element={<ProtectedRoute component={<Crypto />} />}
+            />
+            <Route
+              path="/crypto-add"
+              element={<ProtectedRoute component={<AddCrypto />} />}
+            />
+            <Route
+              path="/crypto/:cid"
+              element={<ProtectedRoute component={<EditCrypto />} />}
             />
           </Route>
         </Routes>

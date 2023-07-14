@@ -11,6 +11,7 @@ import { GrUnorderedList } from "react-icons/gr";
 import { RiProductHuntLine } from "react-icons/ri";
 import { BiUser, BiCategoryAlt } from "react-icons/bi";
 import { FiChevronDown } from 'react-icons/fi'
+import DropDown from "../components/dropDown";
 
 function Layout() {
   const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ function Layout() {
     <div>
       {loading && <LoadingSpinner asOverlay />}
       <div
-        className={`bg-emerald-700 h-screen p-5 pt-8 w-72 fixed top-0 sidebar z-50 ${open ? "w-72" : "w-20"
+        className={`bg-emerald-700 h-screen p-5 pt-8 fixed top-0 sidebar z-50 ${open ? "w-72" : "w-20"
           }`}
         style={{
           transition: "all 0.5s ease",
@@ -204,21 +205,21 @@ function Layout() {
             </span>
           </Link>
 
+
           {/* Payments */}
-          <Link
-            className={` rounded-md text-gray-300  text-sm flex items-center gap-x-4 cursor-pointer hover:bg-light-white py-4 p-2`}
-            to="/payments"
+          <DropDown
+            options={[
+              { name: "Payments", path: "/payments" },
+              // { name: "Refunds", path: "/refunds" },
+              { name: "Offline", path: "/offline-transactions" },
+              { name: "Crypto", path: "/crypto" },
+              { name: "Crypto Requests", path: "/crypto-transactions" },
+            ]}
+            option="Payments"
+            open={open}
           >
-            <span className="text-2xl block float-left">
-              <MdPayment />
-            </span>
-            <span
-              className={` text-base font-md flex-1 
-            ${!open && "hidden"}`}
-            >
-              Payments
-            </span>
-          </Link>
+            <MdPayment />
+          </DropDown>
 
           {/* Logout */}
           <li
@@ -243,7 +244,7 @@ function Layout() {
       <div className="ml-[65px]">
         <Outlet />
       </div>
-    </div>
+    </div >
   );
 }
 

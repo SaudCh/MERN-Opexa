@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-export default function AddImage({ setImage, link, error, setError }) {
+export default function AddImage({ setImage, link, error, setError, buttonText, phImg }) {
   const [preview, setPreview] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const imgRef = useRef();
@@ -31,6 +31,8 @@ export default function AddImage({ setImage, link, error, setError }) {
     }
   };
 
+  const avatar = phImg ? phImg : "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png"
+
   return (
     <div className="flex justify-center items-center flex-col">
       <figure
@@ -52,7 +54,7 @@ export default function AddImage({ setImage, link, error, setError }) {
             src={
               link
                 ? link
-                : "https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png"
+                : avatar
             }
             alt="Profile"
             className="w-[150px] h-[150px] rounded"
@@ -76,7 +78,7 @@ export default function AddImage({ setImage, link, error, setError }) {
         type="button"
         onClick={() => imgRef.current.click()}
       >
-        Add Photo
+        {buttonText ? buttonText : 'Add Photo'}
       </button>
       {error && <p className="text-red-400 text-xs italic">{error}</p>}
     </div>
