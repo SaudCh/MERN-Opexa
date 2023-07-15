@@ -10,7 +10,7 @@ export const TextInput = ({
   error,
   placeholder,
   className,
-  disabled,
+  disabled
 }) => {
   return (
     <div className="flex flex-col py-2">

@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import CategoryTable from "../../components/tables/category";
-import { collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../../config/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
+import { where } from "firebase/firestore";
+import toast from "react-hot-toast";
+
+import React, { useContext, useEffect, useState } from "react";
+
 import { LoadingContext } from "../../contexts/loadingContext";
 import CryptoTable from "../../components/tables/Crypto";
+import useFirebase from "../../hooks/useFirebase";
 
 // import axios from "axios";
 
@@ -13,42 +14,28 @@ export default function Categories() {
 
     const [data, setData] = useState([])
     const { setLoading } = useContext(LoadingContext)
+    const { getDocuments, updateDocument } = useFirebase()
+
+    const getData = async () => {
+        const res = await getDocuments("crypto", setLoading, where("isDeleted", "==", false))
+
+        if (res.status === 400) {
+            toast.error("Error fetching data")
+            return
+        }
+
+        setData(res.data)
+
+    }
 
     useEffect(() => {
-        setLoading(true)
-        const q = query(collection(db, "crypto"), where("isDeleted", "==", false));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
-            })
-            setData(data)
-        });
 
-        setLoading(false)
-
-        // unsubscribe();
-
-        return unsubscribe
+        getData()
 
     }, [])
 
     const deleteCategory = async (id) => {
-        setLoading(true)
-
-        const categoryRef = doc(db, "crypto", id);
-
-        await updateDoc(categoryRef, {
-            isDeleted: true
-        });
-
-        // const categoryRef = doc(db, "categories", cid);
-
-        // await updateDoc(categoryRef, {
-        //     subcategories: arrayRemove(id)
-        // });
-
-        setLoading(false)
+        updateDocument("crypto", id, { isDeleted: true }, setLoading)
     }
 
     return (

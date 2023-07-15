@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
+import toast from "react-hot-toast";
+
+import React, { useContext, useEffect, useState } from "react";
+
+import { TextInput } from "../../components/InputFields";
 import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc, doc, getDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
+import useFirebase from "../../hooks/useFirebase";
 
 
 export default function EditCrypto() {
 
+    const { getDocumentById, updateDocument, uploadImage } = useFirebase()
     const { cid } = useParams()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
@@ -24,31 +26,24 @@ export default function EditCrypto() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        setLoading(true)
 
-        const errors = Validator(data, image)
+        const errors = Validator(data)
         setErrors(errors)
         if (Object.keys(errors).length > 0) return
+        setLoading(true)
 
-        const blob = await fetch(image).then((res) => res.blob())
-        const storageRef = ref(storage, "/images/" + new Date().getTime())
-        const snapshot = await uploadBytes(storageRef, blob)
-        const link = await getDownloadURL(snapshot.ref)
+        const res = image ? await uploadImage(image) : { data: data.image }
 
-        if (link) {
-            const docRef = await addDoc(collection(db, "crypto"), {
-                name: data.name,
-                image: link,
-                isDeleted: false
-            });
+        if (res.status === 400) {
+            toast.error("Error uploading image")
+            return
+        }
 
-            if (docRef) {
-                console.log("success");
-                navigate("/crypto")
-            }
+        const res1 = await updateDocument("crypto", cid, { ...data, image: res.data })
 
-        } else {
-            console.log("error");
+        if (res1.status === 200) {
+            toast.success("Crypto Currency updated successfully")
+            navigate("/crypto")
         }
 
         setLoading(false)
@@ -57,19 +52,18 @@ export default function EditCrypto() {
 
     useEffect(() => {
 
+
+
         const getData = async () => {
-            const docRef = doc(db, "crypto", cid);
-            const docSnap = await getDoc(docRef);
 
-            if (docSnap.exists()) {
-                setData(docSnap.data())
+            const res = await getDocumentById("crypto", cid)
 
-                // const inputs = docSnap.data().inputs
-
-                // setInput(inputs)
-            } else {
-                console.log("No such document!");
+            if (res.status === 400) {
+                navigate("/crypto")
+                return
             }
+
+            setData(res.data)
         }
 
         getData()
@@ -79,7 +73,7 @@ export default function EditCrypto() {
     return (
         <div className="px-6 ">
             <div className="my-4 flex flex-row justify-between px-4">
-                <h1 className=" text-2xl font-semibold mr-2">Add Crypto Currency</h1>
+                <h1 className=" text-2xl font-semibold mr-2">Edit Crypto Currency</h1>
 
                 <Link
                     to="/categories"
@@ -102,6 +96,7 @@ export default function EditCrypto() {
                         buttonText="Upload Icon"
                         phImg={"https://cdn.pixabay.com/photo/2021/04/30/16/46/bitcoin-icon-6219383_1280.png"}
                         error={errors.image}
+                        link={data.image}
                     />
 
                     <TextInput
@@ -130,7 +125,7 @@ export default function EditCrypto() {
                         type="submit"
                         className="bg-blue-500 text-white px-2 py-1 rounded-md mt-4"
                     >
-                        Add
+                        Update
                     </button>
 
                 </div>
@@ -140,12 +135,8 @@ export default function EditCrypto() {
     );
 }
 
-const Validator = (data, image) => {
+const Validator = (data) => {
     let errors = {}
-
-    if (!image) {
-        errors.image = "Image is required"
-    }
 
     if (!data.name) {
         errors.name = "Name is required"

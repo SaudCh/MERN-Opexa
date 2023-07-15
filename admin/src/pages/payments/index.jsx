@@ -4,44 +4,56 @@ import { Link } from "react-router-dom";
 import { LoadingContext } from "../../contexts/loadingContext";
 import { BsEmojiHeartEyes } from "react-icons/bs";
 import { MdArrowCircleUp } from "react-icons/md";
+import useFirebase from "../../hooks/useFirebase";
+import { where } from "firebase/firestore";
+import { dateFormat, timeFormat } from "../../utils/dateTime";
 const columns = [
-    { headerName: "Payment ID" },
-  
-    {
-      headerName: "Date",
-    },
-    {
-      headerName: "Time",
-    },
-    {
-      headerName: "Amount",
-    },
-   
-    {
-      headerName: "Status",
-    },
-  ];
+  { headerName: "Payment ID" },
+
+  {
+    headerName: "Date",
+  },
+  {
+    headerName: "Time",
+  },
+  {
+    headerName: "Amount",
+  },
+
+  {
+    headerName: "Status",
+  },
+];
 
 export default function Payments() {
   const [data, setData] = React.useState([]);
-  const { setIsLoading } = useContext(LoadingContext);
+  const { setLoading } = useContext(LoadingContext);
+  const { getDocuments } = useFirebase();
+
+  const getProduct = async () => {
+    const res = await getDocuments("payments", setLoading, where("status", "==", "succeeded"));
+
+    if (res.status === 400) {
+      toast.error("Error getting payments");
+    }
+
+    setData(res.data);
+
+  };
+
 
   useEffect(() => {
-    const getProduct = async () => {
-      setIsLoading(true);
 
-      setIsLoading(false);
-    };
 
     getProduct();
   }, []);
 
   return (
     <div>
-    
-    <div className="my-4 px-6 flex flex-row">
+
+      <div className="my-4 px-6 flex flex-row">
         <h1 className=" text-2xl font-semibold mr-2">Payments</h1>
-       
+
 
         <div class="inline-flex rounded-md shadow-sm mx-6 " role="group">
           <button
@@ -58,34 +70,36 @@ export default function Payments() {
           </button>
         </div>
       </div>
-  
 
-    <div className="block py-4 px-6   md:mx-2 rounded-md">
-   
 
-      <div className="flex justify-center">
-        <table>
-          <thead>
-            {columns.map((column) => (
-              <th >{column.headerName}</th>
-            ))}
-          </thead>
-          <tbody>
-           
-              <tr >
-                <td data-label="id">#268FCDs</td>
-                <td data-label="date">23-3-2023</td>
-                <td data-label="name">10;00 pm Box</td>
-                <td data-label="price">Rs 800.00</td>
-                <td data-label="status">Received</td>
-                
-                
-              </tr>
-           
-          </tbody>
-        </table>
+      <div className="block py-4 px-6   md:mx-2 rounded-md">
+
+
+        <div className="flex justify-center">
+          <table>
+            <thead>
+              {columns.map((column) => (
+                <th >{column.headerName}</th>
+              ))}
+            </thead>
+            <tbody>
+
+              {
+                data.map((item) => (
+                  <tr >
+                    <td data-label="id">{item.id}</td>
+                    <td data-label="date">{dateFormat(item.createdAt.toDate())}</td>
+                    <td data-label="date">{timeFormat(item.createdAt.toDate())}</td>
+                    <td data-label="price">{item.amount}</td>
+                    <td data-label="status" className="capitalize">{item.status}</td>
+                  </tr>
+                ))
+              }
+
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
   );
 }

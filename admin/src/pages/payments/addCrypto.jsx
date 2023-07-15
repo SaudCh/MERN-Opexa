@@ -1,18 +1,22 @@
-import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
+import { toast } from "react-hot-toast";
+
+import React, { useContext, useState } from "react";
+
+import { TextInput } from "../../components/InputFields";
 import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
+import useFirebase from "../../hooks/useFirebase";
 
 
 export default function AddCrypto() {
+
+    const { uploadImage, addDocument } = useFirebase()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
         address: "",
+        isDeleted: false
     })
     const [errors, setErrors] = useState({})
     const [image, setImage] = useState(null)
@@ -22,32 +26,28 @@ export default function AddCrypto() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        setLoading(true)
 
         const errors = Validator(data, image)
         setErrors(errors)
         if (Object.keys(errors).length > 0) return
+        setLoading(true)
 
-        const blob = await fetch(image).then((res) => res.blob())
-        const storageRef = ref(storage, "/images/" + new Date().getTime())
-        const snapshot = await uploadBytes(storageRef, blob)
-        const link = await getDownloadURL(snapshot.ref)
+        const res = await uploadImage(image)
 
-        if (link) {
-            const docRef = await addDoc(collection(db, "crypto"), {
-                name: data.name,
-                image: link,
-                address: data.address,
-                isDeleted: false
-            });
+        if (res.status === 400) {
+            toast.error("Error uploading image")
+            return
+        }
 
-            if (docRef) {
-                console.log("success");
-                navigate("/crypto")
-            }
+        const res1 = await addDocument("crypto", { ...data, image: res.data })
 
+        console.log(res1)
+
+        if (res1.status === 200) {
+            toast.success("Crypto Currency added successfully")
+            navigate("/crypto")
         } else {
-            console.log("error");
+            toast.error("Error adding crypto currency")
         }
 
         setLoading(false)
