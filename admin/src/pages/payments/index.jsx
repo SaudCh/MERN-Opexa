@@ -87,7 +87,7 @@ export default function Payments() {
               {
                 data.map((item) => (
                   <tr >
-                    <td data-label="id">{item.id}</td>
+                    <td data-label="id">{item.paymentId}</td>
                     <td data-label="date">{dateFormat(item.createdAt.toDate())}</td>
                     <td data-label="date">{timeFormat(item.createdAt.toDate())}</td>
                     <td data-label="price">{item.amount}</td>

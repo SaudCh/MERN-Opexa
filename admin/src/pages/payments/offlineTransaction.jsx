@@ -16,9 +16,9 @@ export default function OfflineTransaction() {
     const { updateDocument, addDocument, getDocuments, getReference } = useFirebase()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
-        name: "",
-        address: "",
-        isDeleted: false
+        email: "",
+        amount: "",
+        rcptnum: ""
     })
     const [errors, setErrors] = useState({})
     const navigate = useNavigate()
@@ -42,6 +42,7 @@ export default function OfflineTransaction() {
             method: "offline",
             status: "succeeded",
             paymentId: randomText(6),
+            description: "Offline payment",
         })
 
         if (res1.status === 200) {
