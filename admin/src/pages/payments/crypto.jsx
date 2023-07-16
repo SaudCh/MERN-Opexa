@@ -36,6 +36,9 @@ export default function Categories() {
 
     const deleteCategory = async (id) => {
         await updateDocument("crypto", id, { isDeleted: true }, setLoading)
+
+        getData()
+
     }
 
     return (
