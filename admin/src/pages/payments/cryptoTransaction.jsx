@@ -8,6 +8,7 @@ import useFirebase from "../../hooks/useFirebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { dateFormat, timeFormat } from "../../utils/dateTime";
 import Modal from "./modal";
+import { db } from "../../config/firebase";
 const columns = [
     { headerName: "Payment ID" },
 
