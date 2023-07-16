@@ -5,7 +5,7 @@ import { LoadingContext } from "../../contexts/loadingContext";
 import { BsEmojiHeartEyes } from "react-icons/bs";
 import { MdArrowCircleUp } from "react-icons/md";
 import useFirebase from "../../hooks/useFirebase";
-import { where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { dateFormat, timeFormat } from "../../utils/dateTime";
 import Modal from "./modal";
 const columns = [
@@ -35,13 +35,24 @@ export default function Payments() {
 
 
     const getProduct = async () => {
-        const res = await getDocuments("payments", setLoading, (where("status", "==", "pending"), where("method", "==", "crypto")));
+        // const res = await getDocuments("payments", setLoading, (where("status", "==", "pending"), where("method", "==", "crypto")));
 
-        if (res.status === 400) {
-            toast.error("Error getting payments");
-        }
+        // if (res.status === 400) {
+        //     toast.error("Error getting payments");
+        // }
 
-        setData(res.data);
+        let documents = [];
+        const q = query(collection(db, 'payments'), where("status", "==", "pending"), where("method", "==", "crypto"));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(async (doc) => {
+            documents.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+
+        setData(documents);
 
     };
 
