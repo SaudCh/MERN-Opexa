@@ -20,6 +20,7 @@ import Cities from "../components/properties/cities";
 import Categories from "../components/properties/categories";
 import AreaUnit from "../components/properties/areaUnit";
 import PriceRange from "../components/properties/priceRange";
+import Profile from "../pages/profile";
 
 export default function AppRoutes() {
   const router = createBrowserRouter(
@@ -28,6 +29,8 @@ export default function AppRoutes() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/profile" element={<Profile />} />
+
           <Route path="/properties" element={<Properties />}>
             <Route path="/properties/popular" element={<Popular />} />
             <Route path="/properties/cities" element={<Cities />} />
