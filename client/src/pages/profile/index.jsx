@@ -1,6 +1,8 @@
 import React from "react";
+import DeleteAccount from "../../components/profile/deleteAccount";
 function Profile() {
   return (
+    <div>
     <div className="w-full flex justify-center items-center my-5">
       <div className="border border-gray-300 p-8 w-[80%] rounded-lg">
         <h1 className="border-b mb-5 pb-3 text-lg font-semibold text-gray-900">
@@ -83,44 +85,54 @@ function Profile() {
           </div>
         </div>
 
-
         <h1 className="mb-3 text-lg font-semibold text-gray-900">
-              Contact Information
-            </h1>
+          Contact Information
+        </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b mb-5 pb-3">
-          <div className="">
-           
-            <div class="mb-5">
-              <label
-                for="success"
-                class="block mb-2 text-sm font-medium text-gray-700 "
-              >
-                Mobile
-              </label>
-              <input
-                type="phone"
-                class=" border border-gray-500 text-gray-900 outline-none text-sm rounded-lg block w-full p-2.5 "
-                placeholder="phone"
-              />
-            </div>
-            <div class="mb-5">
-              <label
-                for="success"
-                class="block mb-2 text-sm font-medium text-gray-700 "
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                class=" border border-gray-500 text-gray-900 outline-none text-sm rounded-lg block w-full p-2.5 "
-                placeholder="xyz@gmail.com"
-              />
-            </div>
+        <div className="grid grid-cols-1  items-center md:grid-cols-2 gap-4  mb-5 ">
+          <div class="mb-5">
+            <label
+              for="success"
+              class="block mb-2 text-sm font-medium text-gray-700 "
+            >
+              Mobile
+            </label>
+            <input
+              type="phone"
+              class=" border border-gray-500 text-gray-900 outline-none text-sm rounded-lg block w-full p-2.5 "
+              placeholder="03001234567"
+            />
           </div>
-       
+          <h1 className="hidden md:flex  text-xs font-light text-gray-700">
+            This is the number for buyers contacts, reminders, and other
+            notifications.
+          </h1>
+
+                  </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 border-b mb-5 pb-3">
+          <div class="mb-5">
+            <label
+              for="success"
+              class="block mb-2 text-sm font-medium text-gray-700 "
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              class=" border border-gray-500 text-gray-900 outline-none text-sm rounded-lg block w-full p-2.5 "
+              placeholder="xyz@gmail.com"
+            />
+          </div>
+          <h1 className="hidden md:flex  text-xs font-light text-gray-700">
+          We won't reveal your email to anyone else nor use it to send you spam
+          </h1>
         </div>
       </div>
+
+      </div>
+
+    <DeleteAccount />
     </div>
   );
 }
