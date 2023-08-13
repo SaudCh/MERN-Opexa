@@ -23,7 +23,8 @@
     "react-router-dom": "^6.4.5",
     "react-select": "^5.7.0",
     "react-toastify": "^9.1.1",
-    "sass": "^1.58.3"
+    "sass": "^1.58.3",
+    "vite-plugin-rewrite-all": "^1.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

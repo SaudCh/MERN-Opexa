@@ -24,26 +24,11 @@ export default function LoginP() {
     setIsLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password)
-      const user = userCredential.user;
-
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-
-        const data = docSnap.data()
-
-        if (data.role != 'admin') throw ("You are not admin!")
-
-        Login(user);
+      await axios.post("auth/admin-login", data).then((res) => {
+        const { token, user } = res.data;
+        Login(user, token);
         navigate("/");
-
-      } else {
-        throw ("No user found!")
-      }
-
-
+      });
     } catch (error) {
       const errorMessage = error.message;
       setErrors({ api: errorMessage || error })

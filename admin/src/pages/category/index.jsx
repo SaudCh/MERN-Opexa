@@ -5,6 +5,7 @@ import { collection, onSnapshot, query, updateDoc, where } from "firebase/firest
 import { db } from "../../config/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
+import axios from "axios";
 
 // import axios from "axios";
 
@@ -14,40 +15,43 @@ export default function Categories() {
     const { setLoading } = useContext(LoadingContext)
 
     useEffect(() => {
-        setLoading(true)
-        const q = query(collection(db, "categories"), where("isDeleted", "==", false));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
-            })
-            setData(data)
-        });
 
-        setLoading(false)
+        const getData = async () => {
+            setLoading(true)
 
-        // unsubscribe();
+            await axios
+                .get("category")
+                .then((res) => {
+                    setData(res.data.categories)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
 
-        return unsubscribe
+        }
+
+        getData()
 
     }, [])
 
     const deleteCategory = async (id) => {
         setLoading(true)
 
-        const categoryRef = doc(db, "categories", id);
+        await axios
+            .delete(`category/${id}`)
+            .then((res) => {
+                setData(data.filter((item) => item._id !== id))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
-        await updateDoc(categoryRef, {
-            isDeleted: true
-        });
-
-        // const categoryRef = doc(db, "categories", cid);
-
-        // await updateDoc(categoryRef, {
-        //     subcategories: arrayRemove(id)
-        // });
-
-        setLoading(false)
     }
 
     return (

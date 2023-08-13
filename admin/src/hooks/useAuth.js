@@ -1,37 +1,54 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+
+let logoutTimer;
 
 export const useAuth = () => {
-    const [user, setUser] = useState(null);
+    const [token, setToken] = useState("");
+    const [user, setUser] = useState("");
+    const [timer, setTimer] = useState();
 
-    const Login = (user) => {
-        setUser({
-            email: user.email,
-            id: user.userId,
-            name: user.name
-        });
+    const Login = useCallback(async (user, token, expireTime) => {
+        const expires = expireTime || new Date(new Date().getTime() + 1000 * 60 * 60 * 6)
+
+        setToken(token);
+        setUser(user);
+        setTimer(expires)
 
         localStorage.setItem("user", JSON.stringify({
             email: user.email,
-            id: user.userId,
-            name: user.name
+            id: user.id || user.uid,
+            expires: expires.toISOString(),
+            role: user.role,
         }));
-
-    };
-
-    const Logout = () => {
-        setUser(null);
-
-        localStorage.removeItem("user");
-    };
-
-    useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-
-        if (storedUser) {
-            setUser(storedUser);
-        }
+        localStorage.setItem("token", token);
 
     }, []);
 
-    return { user, Login, Logout };
-}
+    const Logout = useCallback(() => {
+        setToken(null);
+        setUser(null);
+        setTimer(null)
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+    }, []);
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const token = localStorage.getItem("token");
+        if (user && token && new Date(user.expires) > new Date()) {
+            Login(user, token, new Date(user.expires))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (token && timer) {
+            const rt = timer.getTime() - new Date()
+            logoutTimer = setTimeout(Logout, rt)
+        } else {
+            clearTimeout(logoutTimer)
+        }
+    }, [token, Logout, timer]);
+
+    return { Login, Logout, token, user };
+
+};

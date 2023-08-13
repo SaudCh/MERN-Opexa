@@ -6,11 +6,15 @@ export default function AddImage({ setImage, link, error, setError, buttonText, 
   const imgRef = useRef();
 
   const validateFile = (file) => {
-    const validTypes = ["image/png", "image/jpg", "image/jpeg"];
-    if (validTypes.indexOf(file.type) === -1) {
-      return false;
-    }
-    return true;
+    const regex = /^image\/.*/;
+    return regex.test(file.type);
+
+    // const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+    // if (validTypes.indexOf(file.type) === -1) {
+    //   return false;
+    // }
+
+    // return true;
   };
 
   const handleImageChange = (e) => {
@@ -19,11 +23,11 @@ export default function AddImage({ setImage, link, error, setError, buttonText, 
     setIsValid(fileIsValid);
 
     if (fileIsValid) {
-      // setImage(file);
+      setImage(file);
       const reader = new FileReader();
       reader.onload = () => {
         setPreview(reader.result);
-        setImage(reader.result)
+        // setImage(reader.result)
       };
       reader.readAsDataURL(file);
     } else {
@@ -66,7 +70,7 @@ export default function AddImage({ setImage, link, error, setError, buttonText, 
         type="file"
         ref={imgRef}
         style={{ display: "none" }}
-        accept=".jpg,.png,.jpeg"
+        accept="image/*"
         onChange={handleImageChange}
       />
       <button

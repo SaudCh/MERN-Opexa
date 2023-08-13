@@ -35,7 +35,7 @@ export default function CategoryTable({ data, deleteCategory }) {
                     <td data-label="image">
                       <div className="flex items-center justify-end md:justify-center">
                         <img
-                          src={item.image}
+                          src={import.meta.env.VITE_SERVER_URL + item.image}
                           alt="category"
                           className="w-[80px] h-[80px] object-contain border rounded-full"
                         />
@@ -44,14 +44,14 @@ export default function CategoryTable({ data, deleteCategory }) {
                     <td data-label="action">
                       <div className="flex flex-row justify-end md:justify-center">
                         <Link
-                          to={"/category/" + item.id}
+                          to={"/category/" + item._id}
                           className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2"
                         >
                           Edit
                         </Link>
                         <button
                           className="bg-red-500 text-white px-2 py-1 rounded-md"
-                          onClick={() => deleteCategory(item.id)}
+                          onClick={() => deleteCategory(item._id)}
                         >
                           Delete
                         </button>

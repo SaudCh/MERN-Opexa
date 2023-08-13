@@ -18,9 +18,19 @@ export default function ForgetPassword() {
 
     setIsLoading(true);
 
-    navigate("/reset-password/abc");
+    await axios
+      .post("auth/forgot-password", data)
+      .then((res) => {
+        console.log(res.data);
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
-    setIsLoading(false);
   };
 
   return (

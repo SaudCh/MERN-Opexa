@@ -6,9 +6,14 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { db, storage } from "../../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
+import axios from "axios";
+import useApi from "../../hooks/useApi";
+import { toast } from "react-hot-toast";
 
 
 export default function Categories() {
+
+    const { uploadImage } = useApi()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
@@ -20,32 +25,30 @@ export default function Categories() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+        if (!image) return toast.error("Please select an image")
+        if (!data.name) return toast.error("Please enter name")
+
         setLoading(true)
 
-        const blob = await fetch(image).then((res) => res.blob())
-        const storageRef = ref(storage, "/images/" + new Date().getTime())
-        const snapshot = await uploadBytes(storageRef, blob)
-        const link = await getDownloadURL(snapshot.ref)
+        const res = await uploadImage('image', image, setLoading)
 
-        if (link) {
-            const docRef = await addDoc(collection(db, "categories"), {
-                name: data.name,
-                image: link,
-                inputs: [],
-                subcategories: [],
-                isDeleted: false
-            });
+        if (res.status === 400) return toast.error(res.data.message)
 
-            if (docRef) {
-                console.log("success");
-                navigate("/categories")
-            }
-
-        } else {
-            console.log("error");
-        }
-
-        setLoading(false)
+        await axios.post("category", {
+            name: data.name,
+            image: res.image
+        })
+            .then((res) => {
+                console.log(res.data);
+                toast.success("Category added successfully");
+                navigate("/categories");
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
     }
 

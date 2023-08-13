@@ -6,6 +6,7 @@ import { collection, getDoc, onSnapshot } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import axios from "axios";
 
 
 export default function EditCategory() {
@@ -73,18 +74,18 @@ export default function EditCategory() {
     useEffect(() => {
 
         const getData = async () => {
-            const docRef = doc(db, "subcategories", id);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                setData(docSnap.data())
-
-                const inputs = docSnap.data().inputs
-
-                setInput(inputs)
-            } else {
-                console.log("No such document!");
-            }
+            setLoading(true)
+            await axios
+                .get(`subcategory/${id}`)
+                .then((res) => {
+                    setData(res.data.subcategory)
+                    setInput(res.data.category.inputs)
+                })
+                .catch((err) => {
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
         }
 
         getData()
@@ -92,25 +93,30 @@ export default function EditCategory() {
     }, [id])
 
     useEffect(() => {
-        setLoading(true)
-        const unsubscribe = onSnapshot(collection(db, "categories"), (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                // data.push({ id: doc.id, ...doc.data() })
-                data.push({ value: doc.id, label: doc.data().name })
-            }
-            )
 
-            setCategory(data)
+        const getData = async () => {
 
-        });
+            setLoading(true)
+            await axios.get("category")
+                .then((res) => {
+                    setCategory(res.data.categories.map((item) => {
+                        return {
+                            value: item._id,
+                            label: item.name
+                        }
+                    }))
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    console.log("done")
+                    setLoading(false)
+                })
 
-        setLoading(false)
+        }
 
-        // unsubscribe();
-
-        return unsubscribe
-
+        getData()
     }, [])
 
     return (
@@ -154,7 +160,7 @@ export default function EditCategory() {
                         options={categories}
                         value={
                             categories.find((e) => {
-                                return e?.value === data?.category?.id
+                                return e?.value === data?.category?._id
                             })
                         }
                         isDisabled={true}

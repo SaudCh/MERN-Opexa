@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./auth.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "../../components/spinner";
+import { toast } from "react-hot-toast";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -12,14 +13,32 @@ export default function ResetPassword() {
     password: "",
     confirmPassword: "",
   });
+  const { token } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
+
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
     setIsLoading(true);
 
-    navigate("/login");
+    await axios
+      .post(`auth/reset-password`, {
+        password: data.password,
+        token
+      })
+      .then((res) => {
+        console.log(res.data);
+        toast.success("Password reset successfully");
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+
 
     setIsLoading(false);
   };

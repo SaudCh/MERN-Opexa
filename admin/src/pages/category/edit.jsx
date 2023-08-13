@@ -8,6 +8,9 @@ import { collection, addDoc, getDoc } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import axios from "axios";
+import useApi from "../../hooks/useApi";
+import { toast } from "react-toastify";
 
 
 export default function EditCategory() {
@@ -16,6 +19,7 @@ export default function EditCategory() {
         name: "",
     })
     const [image, setImage] = useState(null)
+    const { uploadImage } = useApi()
     const navigate = useNavigate()
     const { id } = useParams()
 
@@ -45,23 +49,33 @@ export default function EditCategory() {
 
         setLoading(true)
 
-        let link = data.image
+        let imageUrl = data.image
 
         if (image) {
-            const blob = await fetch(image).then((res) => res.blob())
-            const storageRef = ref(storage, "/images/" + new Date().getTime())
-            const snapshot = await uploadBytes(storageRef, blob)
-            link = await getDownloadURL(snapshot.ref)
+            const res = await uploadImage('image', image, setLoading)
+
+            if (res.status === 400) {
+                toast.error(res.message)
+                return
+            }
+
+            imageUrl = res.image
         }
 
-        const category = doc(db, "categories", id);
-
-        await updateDoc(category, {
+        await axios.patch(`category/${id}`, {
             name: data.name,
-            image: link
-        });
-
-        setLoading(false)
+            image: imageUrl
+        })
+            .then((res) => {
+                toast.success(res.data.message)
+                navigate("/categories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
     }
 
@@ -82,18 +96,15 @@ export default function EditCategory() {
     useEffect(() => {
 
         const getData = async () => {
-            const docRef = doc(db, "categories", id);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                setData(docSnap.data())
-
-                const inputs = docSnap.data().inputs
-
-                setInput(inputs)
-            } else {
-                console.log("No such document!");
-            }
+            await axios
+                .get(`category/${id}`)
+                .then((res) => {
+                    setData(res.data.category)
+                    setInput(res.data.category.inputs)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         }
 
         getData()
@@ -129,7 +140,7 @@ export default function EditCategory() {
                         name="image"
                         className="w-full"
                         setImage={setImage}
-                        link={data?.image}
+                        link={import.meta.env.VITE_SERVER_URL + data?.image}
                     />
 
                     <TextInput

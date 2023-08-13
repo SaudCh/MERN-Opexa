@@ -31,18 +31,18 @@ export default function SubCategoryTable({ data, deleteCategory }) {
                 data.map((item) => {
                   return (<tr>
                     <td data-label="name">{item.name}</td>
-                    <td data-label="name">{item?.category?.label}</td>
+                    <td data-label="name">{item?.category?.name}</td>
                     <td data-label="action">
                       <div className="flex flex-row justify-end md:justify-center">
                         <Link
-                          to={"/subcategory/" + item.id}
+                          to={"/subcategory/" + item._id}
                           className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2"
                         >
                           Edit
                         </Link>
                         <button
                           className="bg-red-500 text-white px-2 py-1 rounded-md"
-                          onClick={() => deleteCategory(item.id, item?.category?.id)}
+                          onClick={() => deleteCategory(item._id, item?.category?._id)}
                         >
                           Delete
                         </button>

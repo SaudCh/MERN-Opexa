@@ -1,17 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc, onSnapshot, updateDoc, arrayUnion, doc, where, query, and } from "firebase/firestore";
-import { LoadingContext } from "../../contexts/loadingContext";
 
+import React, { useContext, useEffect, useState } from "react";
+
+import { SelectInput, TextInput } from "../../components/InputFields";
+import { LoadingContext } from "../../contexts/loadingContext";
 
 export default function AddFurtherCategory() {
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
-        category: {},
-        subcategory: {}
+        category: "",
+        subcategory: ""
     })
     const [categories, setCategory] = useState([])
     const [subcategories, setSubCategory] = useState([])
@@ -22,82 +23,71 @@ export default function AddFurtherCategory() {
         e.preventDefault()
 
         setLoading(true)
-
-        const docRef = await addDoc(collection(db, "furthercategories"), {
-            name: data.name,
-            category: data.category,
-            subcategory: data.subcategory,
-            inputs: [],
-            isDeleted: false
-        });
-
-        const collectionRef = doc(db, "categories", data?.category?.id);
-
-        await updateDoc(collectionRef, {
-            subcategories: arrayUnion(docRef.id)
-        });
-
-        const subcategoryRef = doc(db, "subcategories", data?.subcategory?.id);
-
-        await updateDoc(subcategoryRef, {
-            subcategories: arrayUnion(docRef.id)
-        });
-
-
-        if (docRef) {
-            console.log("success");
-            navigate("/furthercategories")
-        }
-
-        setLoading(false)
+        await axios
+            .post("furthercategory", data)
+            .then((res) => {
+                toast.success("Further Category Added Successfully")
+                navigate("/furthercategories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
     }
 
     useEffect(() => {
-        setLoading(true)
-        const q = query(collection(db, "categories"), where("isDeleted", "==", false));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-
-                data.push({
-                    label: doc.data().name,
-                    value: doc.id
+        const getData = async () => {
+            setLoading(true)
+            await axios
+                .get("category")
+                .then((res) => {
+                    setCategory(res.data.categories.map((item) => {
+                        return {
+                            value: item._id,
+                            label: item.name
+                        }
+                    }))
                 })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
 
-            })
-            setCategory(data)
-        });
-
-        setLoading(false)
-
-        // unsubscribe();
-
-        return unsubscribe
+        getData()
 
     }, [])
 
     useEffect(() => {
+        if (!data?.category) return
 
-        if (!data?.category?.id) return
-
-        setLoading(true)
-
-        const q = query(collection(db, "subcategories"), where("isDeleted", "==", false), where("category.id", "==", data.category.id));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                data.push({
-                    label: doc.data().name,
-                    value: doc.id
+        const getData = async () => {
+            setLoading(true)
+            await axios
+                .get(`subcategory?category=${data?.category}`)
+                .then((res) => {
+                    setSubCategory(res.data.subcategories.map((item) => {
+                        return {
+                            value: item._id,
+                            label: item.name
+                        }
+                    }))
+                }
+                )
+                .catch((err) => {
+                    console.log(err)
                 })
-            })
-            setSubCategory(data)
-        });
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
 
-        setLoading(false)
-
-        return unsubscribe
+        getData()
 
     }, [data.category])
 
@@ -136,10 +126,7 @@ export default function AddFurtherCategory() {
                         className="w-full"
                         options={categories}
                         onChange={(e) => setData({
-                            ...data, category: {
-                                id: e.value,
-                                label: e.label
-                            }
+                            ...data, category: e.value
                         })}
                     />
 
@@ -149,10 +136,7 @@ export default function AddFurtherCategory() {
                         className="w-full"
                         options={subcategories}
                         onChange={(e) => setData({
-                            ...data, subcategory: {
-                                id: e.value,
-                                label: e.label
-                            }
+                            ...data, subcategory: e.value
                         })}
                     />
 

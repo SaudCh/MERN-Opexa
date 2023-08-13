@@ -14,19 +14,10 @@ const columns = [
     headerName: "Action",
   },
 ];
-export default function UserTable() {
-  const [data, setData] = React.useState([]);
-  const { setIsLoading } = useContext(LoadingContext);
-
-  useEffect(() => {
-    const getProduct = async () => {
-      setIsLoading(true);
-
-      setIsLoading(false);
-    };
-
-    getProduct();
-  }, []);
+export default function UserTable({
+  data,
+  editUser,
+}) {
 
   return (
     <div>
@@ -39,16 +30,20 @@ export default function UserTable() {
               ))}
             </thead>
             <tbody>
-              <tr>
-                <td data-label="id">Saud</td>
-                <td data-label="date">saudch@gmail.com</td>
-                <td data-label="name">Admin</td>
-                <td data-label="price">
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white p-1 rounded">
-                    Block
-                  </button>
-                </td>
-              </tr>
+              {
+                data.map((user) => (
+                  <tr>
+                    <td data-label="id">{user.name || 'N/A'}</td>
+                    <td data-label="date">{user.email}</td>
+                    <td data-label="name" className=" capitalize ">{user.role}</td>
+                    <td data-label="price">
+                      <button className="bg-blue-500 hover:bg-blue-700 text-white p-1 rounded">
+                        Block
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>

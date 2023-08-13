@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { arrayRemove, collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../../config/firebase";
-import { doc } from "firebase/firestore";
+
+import React, { useContext, useEffect, useState } from "react";
+
 import { LoadingContext } from "../../contexts/loadingContext";
 import FurtherCategoryTable from "../../components/tables/furtherCategory";
-
-// import axios from "axios";
 
 export default function FurtherCategories() {
 
@@ -14,39 +13,38 @@ export default function FurtherCategories() {
     const { setLoading } = useContext(LoadingContext)
 
     useEffect(() => {
-        setLoading(true)
 
-        const q = query(collection(db, "furthercategories"), where("isDeleted", "==", false));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
-            })
-            setData(data)
-        });
+        const getData = async () => {
+            setLoading(true)
+            await axios
+                .get("furthercategory")
+                .then((res) => {
+                    setData(res.data.furthercategories)
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+                .finally(() => { setLoading(false) })
+        }
 
-        setLoading(false)
-
-        return unsubscribe
+        getData()
 
     }, [])
 
     const deleteCategory = async (id, cid) => {
         setLoading(true)
 
-        const subcategoryRef = doc(db, "futhercategories", id);
+        await axios
+            .delete("furthercategory/" + id)
+            .then((res) => {
+                toast.success("Further Category Deleted Successfully")
+                setData(data.filter((item) => item._id !== id))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
 
-        await updateDoc(subcategoryRef, {
-            isDeleted: true
-        });
-
-        const categoryRef = doc(db, "subcategories", cid);
-
-        await updateDoc(categoryRef, {
-            subcategories: arrayRemove(id)
-        });
-
-        setLoading(false)
     }
 
     return (

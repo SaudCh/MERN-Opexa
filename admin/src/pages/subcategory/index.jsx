@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import CategoryTable from "../../components/tables/category";
 import { arrayRemove, collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import SubCategoryTable from "../../components/tables/subcategory";
-
-// import axios from "axios";
+import axios from "axios";
 
 export default function SubCategories() {
 
@@ -15,48 +13,41 @@ export default function SubCategories() {
     const { setLoading } = useContext(LoadingContext)
 
     useEffect(() => {
-        setLoading(true)
 
-        const q = query(collection(db, "subcategories"), where("isDeleted", "==", false));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let data = []
-            snapshot.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
-            })
-            setData(data)
-        });
+        const getData = async () => {
+            setLoading(true)
 
-        setLoading(false)
+            await axios
+                .get("subcategory")
+                .then((res) => {
+                    setData(res.data.subcategories)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
 
-        return unsubscribe
+        }
+
+        getData()
 
     }, [])
 
     const deleteCategory = async (id, cid) => {
         setLoading(true)
-
-        const subcategoryRef = doc(db, "subcategories", id);
-
-        await updateDoc(subcategoryRef, {
-            isDeleted: true
-        });
-
-        const categoryRef = doc(db, "categories", cid);
-
-        await updateDoc(categoryRef, {
-            subcategories: arrayRemove(id)
-        });
-
-        // const q = query(collection(db, "subcategories"), where("subcategory", "==", id));
-        // const unsubscribe = onSnapshot(q, (snapshot) => {
-        //     let data = []
-        //     snapshot.forEach((doc) => {
-        //         data.push({ ...doc.data(), id: doc.id })
-        //     })
-        //     setData(data)
-        // });
-
-        setLoading(false)
+        await axios
+            .delete(`subcategory/${id}`)
+            .then((res) => {
+                setData(data.filter((item) => item._id !== id))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     return (
