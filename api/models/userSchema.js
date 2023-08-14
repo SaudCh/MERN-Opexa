@@ -19,6 +19,7 @@ const userSchema = schema({
     state: { type: String },
     country: { type: String },
     birthdate: { type: Date },
+    completed: { type: Boolean, default: false },
     wishlist: [{ type: schema.Types.ObjectId, ref: "product" }],
 }, {
     timestamps: true

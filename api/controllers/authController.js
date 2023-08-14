@@ -1,6 +1,7 @@
 const userSchema = require('../models/userSchema')
 const HttpError = require('../middleware/httpError')
 const walletSchema = require('../models/walletSchema')
+const transcationSchema = require('../models/transactionSchema')
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -48,12 +49,15 @@ const signup = async (req, res, next) => {
     try {
         await newWallet.save()
         await newUser.save()
+
+        const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role, completed: newUser.completed }, process.env.JWT_KEY, { expiresIn: '6h' })
+
+        res.status(201).json({ message: 'User created successfully', user: { id: newUser.id, email: newUser.email, role: newUser.role, status: newUser.status }, token: token })
+
     } catch (err) {
         const error = new HttpError(err.message, 500)
         return next(error)
     }
-
-    res.status(201).json({ message: 'User created successfully' })
 
 }
 
@@ -101,7 +105,7 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
-    res.status(201).json({ message: "Login Success", user: { id: existingUser.id, email: existingUser.email, role: existingUser.role, status: existingUser.status }, token: token });
+    res.status(201).json({ message: "Login Success", user: { id: existingUser.id, email: existingUser.email, role: existingUser.role, status: existingUser.status, completed: existingUser.completed }, token: token });
 
 }
 
@@ -253,18 +257,6 @@ const updateProfile = async (req, res, next) => {
 
         const {
             name,
-            phoneNumber,
-            phNumWithCode,
-            countryCode,
-            city,
-            state,
-            country,
-            birthdate,
-            about,
-            website,
-            facebook,
-            instagram,
-            twitter,
             avatar
         } = req.body
 
@@ -274,21 +266,11 @@ const updateProfile = async (req, res, next) => {
 
         await userSchema.findByIdAndUpdate(id, {
             name,
-            phoneNumber,
-            phNumWithCode,
-            countryCode,
-            city,
-            state,
-            country,
-            birthdate,
-            about,
-            website,
-            facebook,
-            instagram,
-            twitter,
-            avatar
+            avatar,
+            completed: true
         })
 
+        // const newUser = await userSchema.findById(id, { password: 0 })
 
         res.status(200).json({ message: "Profile updated" })
 
@@ -296,6 +278,24 @@ const updateProfile = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
 
+}
+
+const getWallet = async (req, res, next) => {
+    try {
+        const { id } = req.user
+
+        const wallet = await walletSchema.findOne({ user: id })
+
+        if (!wallet) return next(new HttpError("Wallet not found", 404))
+
+        const transactions = await transcationSchema.find({ user: id })
+
+        res.status(200).json({ wallet, transactions })
+
+    } catch (error) {
+        console.log(error)
+        return next(new HttpError(error.message, 400))
+    }
 }
 
 
@@ -306,5 +306,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     getbasicProfile,
-    updateProfile
+    updateProfile,
+    getWallet
 }

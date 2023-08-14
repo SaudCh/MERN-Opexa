@@ -13,6 +13,9 @@ const createSubcategory = async (req, res, next) => {
 
     try {
         await newSubcategory.save()
+
+        await categorySchema.findByIdAndUpdate(category, { $push: { subcategories: newSubcategory._id } })
+
     } catch (err) {
         const error = new HttpError(err.message, 500)
         return next(error)

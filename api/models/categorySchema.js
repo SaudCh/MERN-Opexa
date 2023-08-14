@@ -6,7 +6,8 @@ const categorySchema = schema({
     name: { type: String, required: true },
     image: { type: String },
     isDeleted: { type: Boolean, default: false },
-    inputs: [{ type: Object }]
+    inputs: [{ type: Object }],
+    subcategories: [{ type: schema.Types.ObjectId, ref: "subcategory" }],
 }, {
     timestamps: true
 })

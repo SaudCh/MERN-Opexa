@@ -5,7 +5,8 @@ const {
     forgotPassword,
     resetPassword,
     getbasicProfile,
-    updateProfile
+    updateProfile,
+    getWallet
 } = require('../controllers/authController')
 
 const router = require('express').Router()
@@ -23,6 +24,7 @@ router.post('/reset-password', resetPassword)
 router.use(checkAuth)
 router.get('/get-basic-profile', getbasicProfile)
 router.patch('/update-profile', updateProfile)
+router.get('/get-wallet', getWallet)
 
 
 module.exports = router
