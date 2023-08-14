@@ -7,9 +7,10 @@ const router = require('express').Router()
 
 const checkAuth = require('../middleware/checkAuth')
 
+router.post('/stripe-hook', stripeHook)
+
 router.use(checkAuth)
 
 router.post('/create-intent', createIntent)
-router.post('/stripe-hook', stripeHook)
 
 module.exports = router

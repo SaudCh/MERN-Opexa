@@ -51,18 +51,18 @@ const createIntent = async (req, res, next) => {
         { customer: customer.id },
         { apiVersion: '2022-11-15' }
     );
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: currency ? currency : 'usd',
-        customer: customer.id,
-        payment_method_types: ['card'],
-        receipt_email: receipt_email,
-        description: description,
-    });
 
-    console.log(paymentIntent)
+    let paymentIntent
 
     try {
+        paymentIntent = await stripe.paymentIntents.create({
+            amount: amount,
+            currency: currency ? currency : 'pkr',
+            customer: customer.id,
+            payment_method_types: ['card'],
+            receipt_email: receipt_email,
+            description: description,
+        });
 
         const newTransaction = new transcationSchema({
             user: uid,
@@ -119,7 +119,11 @@ const stripeHook = async (req, res, next) => {
 
                 const amount = parseFloat(amount_received).toFixed(2) / 100
 
-                const transaction = await transcationSchema.findOneAndUpdate({ paymentIntent: id }, {
+                const transaction = await transcationSchema.findOne({ paymentIntent: id })
+
+                console.log(transaction)
+
+                transcationSchema.findOneAndUpdate({ paymentIntent: id }, {
                     status: 'succeeded',
                     amount
                 })
