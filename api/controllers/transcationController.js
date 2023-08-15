@@ -110,7 +110,7 @@ const stripeHook = async (req, res, next) => {
         switch (event.type) {
             case "payment_intent.created":
                 paymentIntent = event.data.object;
-                functions.logger.log("Payment Intent Created", paymentIntent.id);
+                // functions.logger.log("Payment Intent Created", paymentIntent.id);
                 break;
             case "payment_intent.succeeded":
                 paymentIntent = event.data.object;
@@ -146,10 +146,8 @@ const stripeHook = async (req, res, next) => {
 
         res.json({ received: true });
     } catch (error) {
-        throw new functions.https.HttpsError(
-            "unknown",
-            `Error constructing Stripe event: ${error}`
-        );
+        console.log(error)
+        return next(new HttpError(error.message, 500))
     }
 }
 
@@ -162,6 +160,11 @@ const randomText = (length = 6) => {
     }
     return result;
 };
+
+const getAmount = (amount) => {
+    return parseFloat(amount).toFixed(2) * 100
+}
+
 
 module.exports = {
     createIntent,
