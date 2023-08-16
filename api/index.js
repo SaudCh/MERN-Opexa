@@ -34,8 +34,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
-const { stripeHook } = require('./controllers/transcationController')
-app.post('/api/transcation/stripe-hook', stripeHook)
+app.post('/api/stripe', require('./routes/stripeRouter'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
