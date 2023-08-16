@@ -34,7 +34,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
-app.use('/api/stripe', require('./routes/stripeRouter'))
+app.use('/api/stripe', bodyParser.raw({ type: '*/*' }), require('./routes/stripeRouter'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())

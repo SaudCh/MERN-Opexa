@@ -96,15 +96,13 @@ const createIntent = async (req, res, next) => {
 }
 
 const stripeHook = async (req, res, next) => {
-    let signature = req.headers["stripe-signature"];
+    const sig = req.headers['stripe-signature'];
+
+    console.log(signature)
 
     let event;
     try {
-        event = stripe.webhooks.constructEvent(
-            req.body,
-            signature,
-            stripeSigningSecret
-        );
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
 
         let paymentIntent = null;
         switch (event.type) {
