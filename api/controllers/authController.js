@@ -288,7 +288,7 @@ const getWallet = async (req, res, next) => {
 
         if (!wallet) return next(new HttpError("Wallet not found", 404))
 
-        const transactions = await transcationSchema.find({ user: id })
+        const transactions = await transcationSchema.find({ user: id }).sort({ createdAt: -1 })
 
         res.status(200).json({ wallet, transactions })
 

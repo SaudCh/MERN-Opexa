@@ -119,7 +119,7 @@ const stripeHook = async (req, res, next) => {
 
                 console.log(transaction)
 
-                transcationSchema.findOneAndUpdate({ paymentIntent: id }, {
+                await transcationSchema.findOneAndUpdate({ paymentIntent: id }, {
                     status: 'succeeded',
                     amount
                 })

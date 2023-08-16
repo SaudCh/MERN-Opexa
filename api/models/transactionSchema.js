@@ -20,7 +20,8 @@ const transactionSchema = new mongoose.Schema({
     cryptoAddress: { type: String },
     screenshot: { type: String },
     transactionHash: { type: String },
-
+}, {
+    timestamps: true
 });
 
 const Transaction = mongoose.model('transaction', transactionSchema);
