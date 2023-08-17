@@ -7,6 +7,71 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const bcrypt = require('bcryptjs')
 const stripeSigningSecret = process.env.STRIPE_SIGNING_SECRET
 
+const getUserPayments = async (req, res, next) => {
+    try {
+        const { id } = req.body
+        const { status } = req.query
+
+        const user = await userSchema.findById(id)
+
+        if (!user) return next(new HttpError('User not found', 404))
+
+        let where = { user: id }
+
+        if (status) where.status = status.split(',')
+
+
+        const transactions = await transcationSchema.find(where).sort({ createdAt: -1 })
+
+        res.status(200).json({
+            transactions
+        })
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+
+}
+
+const getAllPayments = async (req, res, next) => {
+    try {
+
+        const { status, paymentMethod } = req.query
+
+        let where = {}
+
+        if (status) where.status = status.split(',')
+        if (paymentMethod) where.paymentMethod = paymentMethod.split(',')
+
+        const transactions = await transcationSchema.find(where).sort({ createdAt: -1 }).populate('user')
+
+        res.status(200).json({
+            transactions
+        })
+
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+}
+
+const getPayment = async (req, res, next) => {
+    try {
+        const { id } = req.params
+
+        const transaction = await transcationSchema.findById(id).populate('user')
+
+        if (!transaction) return next(new HttpError('Transaction not found', 404))
+
+        res.status(200).json({
+            transaction
+        })
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+}
+
 const createIntent = async (req, res, next) => {
 
     const {
@@ -157,13 +222,182 @@ const randomText = (length = 6) => {
     return result;
 };
 
-const getAmount = (amount) => {
-    return parseFloat(amount).toFixed(2) * 100
+const createOffline = async (req, res, next) => {
+
+    const {
+        amount,
+        currency,
+        receiptEmail,
+        description = 'Byhand Cash Deposit',
+        uid,
+        rcptnum
+    } = req.body;
+
+    let user;
+
+    try {
+        user = await userSchema.findById(uid)
+    } catch (err) {
+        const error = new HttpError(err.message, 500)
+        return next(error)
+    }
+
+    if (!user) {
+        const error = new HttpError('User not found', 404)
+        return next(error)
+    }
+
+    const newTransaction = new transcationSchema({
+        user: uid,
+        type: 'deposit',
+        amount: amount,
+        paymentMethod: 'offline',
+        currency: currency ? currency : 'usd',
+        description,
+        email: receiptEmail,
+        status: 'succeeded',
+        transactionDate: Date.now(),
+
+        paymentId: rcptnum,
+    })
+
+    await walletSchema.findOneAndUpdate({ user: uid }, {
+        $inc: {
+            balance: amount
+        }
+    })
+
+    await newTransaction.save()
+
+    res.status(201).json({
+        transaction: newTransaction
+    });
+
 }
 
+const createCrypto = async (req, res, next) => {
+
+    const {
+        amount,
+        currency,
+        receiptEmail,
+        description = 'Crypto Deposit',
+        uid,
+        screenshot,
+    } = req.body;
+
+    let user;
+
+    try {
+        user = await userSchema.findById(uid)
+
+        if (!user) return next(new HttpError('User not found', 404))
+
+        const newTransaction = new transcationSchema({
+            user: uid,
+            type: 'deposit',
+            amount: amount,
+            paymentMethod: 'crypto',
+            currency: currency ? currency : 'usd',
+            description,
+            email: receiptEmail,
+            status: 'pending',
+            transactionDate: Date.now(),
+            screenshot,
+            paymentId: randomText(6),
+        })
+
+        await newTransaction.save()
+
+        res.status(201).json({
+            transaction: newTransaction
+        });
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+
+}
+
+const acceptCrypto = async (req, res, next) => {
+
+    const {
+        amount,
+        id,
+        transactionHash,
+        uid
+    } = req.body;
+
+    try {
+        const user = await userSchema.findById(uid)
+
+        if (!user) return next(new HttpError('User not found', 404))
+
+        const transaction = await transcationSchema.findById(id, { status: 'pending' })
+
+        if (!transaction) return next(new HttpError('Transaction not found', 404))
+
+        await transcationSchema.findByIdAndUpdate(id, {
+            status: 'succeeded',
+            transactionHash,
+            amount
+        })
+
+        await walletSchema.findOneAndUpdate({ user: uid }, {
+            $inc: {
+                balance: amount
+            }
+        })
+
+        res.status(201).json({
+            transaction
+        });
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+
+}
+
+const rejectCrypto = async (req, res, next) => {
+
+    const {
+        id,
+        uid
+    } = req.body;
+
+    try {
+        const user = await userSchema.findById(uid)
+
+        if (!user) return next(new HttpError('User not found', 404))
+
+        const transaction = await transcationSchema.findById(id, { status: 'pending' })
+
+        if (!transaction) return next(new HttpError('Transaction not found', 404))
+
+        await transcationSchema.findByIdAndUpdate(id, {
+            status: 'failed',
+        })
+
+        res.status(201).json({
+            transaction
+        });
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+
+}
 
 module.exports = {
     createIntent,
-    stripeHook
+    stripeHook,
+    getPayment,
+    getUserPayments,
+    getAllPayments,
+    createOffline,
+    createCrypto,
+    acceptCrypto,
+    rejectCrypto
 }
 

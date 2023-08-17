@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CategoryTable from "../../components/tables/category";
-import { collection, onSnapshot, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../../config/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import axios from "axios";
 

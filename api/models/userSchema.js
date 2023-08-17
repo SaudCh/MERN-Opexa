@@ -9,7 +9,7 @@ const userSchema = schema({
     password: { type: String },
     avatar: { type: String },
     role: { type: String, default: "user" },
-    status: { type: String, default: "pending" },
+    status: { type: String, default: "active" },
     isDeleted: { type: Boolean, default: false },
     editorRequest: { type: String },
     phoneNumber: { type: String },

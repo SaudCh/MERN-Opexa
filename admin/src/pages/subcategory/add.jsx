@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
-import { LoadingContext } from "../../contexts/loadingContext";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+
+import React, { useContext, useEffect, useState } from "react";
+
+import { LoadingContext } from "../../contexts/loadingContext";
+import { SelectInput, TextInput } from "../../components/InputFields";
 
 
 export default function AddSubCategory() {

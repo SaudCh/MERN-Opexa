@@ -1,19 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 
 import React, { useContext, useState } from "react";
 
 import { TextInput } from "../../components/InputFields";
-import AddImage from "../../components/ImageInput";
 import { LoadingContext } from "../../contexts/loadingContext";
-import useFirebase from "../../hooks/useFirebase";
-import { increment, where } from "firebase/firestore";
-import { randomText } from "../../utils/randomText";
 
 
 export default function OfflineTransaction() {
-
-    const { updateDocument, addDocument, getDocuments, getReference } = useFirebase()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         email: "",
@@ -33,26 +28,24 @@ export default function OfflineTransaction() {
         setErrors(errors)
         if (Object.keys(errors).length > 0) return
 
-        const res1 = await addDocument('payments', {
-            ...data,
-            amount: parseInt(data.amount),
-            uid: user.id,
-            email: user.email,
-            userRef: getReference("users", user.id),
-            method: "offline",
-            status: "succeeded",
-            paymentId: randomText(6),
-            description: "Offline payment",
-        })
+        setLoading(true)
+        await axios
+            .post('transcation/create-offline', {
+                amount: data.amount,
+                currency: 'pkr',
+                receiptEmail: user.email,
+                uid: user._id,
+                rcptnum: data.rcptnum
 
-        if (res1.status === 200) {
-            toast.success("payment added successfully")
-            navigate("/payments")
-        } else {
-            toast.error("Error adding crypto currency")
-        }
-
-        setLoading(false)
+            })
+            .then((res) => {
+                toast.success("Payment added successfully")
+                navigate('/payments')
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
 
     }
 
@@ -66,28 +59,18 @@ export default function OfflineTransaction() {
             return
         }
 
-        const walRes = updateDocument("wallets", data.uid, {
-            amount: increment(parseInt(data.amount))
-        })
+        setLoading(true)
+        await axios
+            .get('user/user-by-email/' + data.email)
+            .then((res) => {
+                setUser(res.data.user)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
 
-        if (walRes.status === 400) {
-            toast.error("Error updating wallet")
-            return
-        }
 
-        const res = await getDocuments("users", setLoading, where("email", "==", data.email))
-
-        if (res.status === 400) {
-            toast.error("Error fetching data")
-            return
-        }
-
-        if (res.data.length === 0) {
-            toast.error("No user found")
-            return
-        }
-
-        setUser(res.data[0])
     }
 
 
@@ -141,7 +124,7 @@ export default function OfflineTransaction() {
                     </button>
                 </form>
 
-                {user.id && <form
+                {user._id && <form
                     className="grid grid-cols-2 gap-2 w-full md:w-2/3 border p-10 rounded mt-2"
                     onSubmit={handleSubmit}
                 >

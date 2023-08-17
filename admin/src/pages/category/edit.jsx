@@ -1,16 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
-import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc, getDoc } from "firebase/firestore";
-import { doc, updateDoc } from "firebase/firestore";
-import { LoadingContext } from "../../contexts/loadingContext";
-import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+
+import React, { useContext, useEffect, useState } from "react";
+
 import useApi from "../../hooks/useApi";
-import { toast } from "react-toastify";
+import AddImage from "../../components/ImageInput";
+import { TextInput } from "../../components/InputFields";
+import { LoadingContext } from "../../contexts/loadingContext";
 
 
 export default function EditCategory() {
@@ -83,12 +81,6 @@ export default function EditCategory() {
         e.preventDefault()
 
         setLoading(true)
-
-        const category = doc(db, "categories", id);
-
-        await updateDoc(category, {
-            inputs
-        });
 
         setLoading(false)
     }

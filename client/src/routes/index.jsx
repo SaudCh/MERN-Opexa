@@ -11,7 +11,6 @@ import Home from "../pages/home";
 import Layout from "./layout";
 import Checkout from "../pages/checkout";
 import Description from "../components/checkout/description";
-import ProductLayout from "./productLayout";
 import Additional from "../components/checkout/additional";
 import Wishlist from "../pages/wishlist";
 import Properties from "../pages/properties";

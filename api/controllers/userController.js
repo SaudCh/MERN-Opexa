@@ -46,6 +46,21 @@ const getUserById = async (req, res, next) => {
 
 }
 
+const getUserByEmail = async (req, res, next) => {
+    try {
+        const { email } = req.params
+
+        const user = await userSchema.findOne({ email: email }, { name: 1, email: 1, role: 1, avatar: 1, name: 1 })
+
+        if (!user) return next(new HttpError("User not found", 404))
+
+        res.status(200).json({ user: user })
+
+    } catch (error) {
+        return new HttpError(error.message, 500)
+    }
+}
+
 const updateStatus = async (req, res, next) => {
     try {
         const { id, status } = req.body
@@ -196,5 +211,6 @@ module.exports = {
     inviteUser,
     acceptInvitation,
     removeInvitation,
-    updateStatus
+    updateStatus,
+    getUserByEmail
 }

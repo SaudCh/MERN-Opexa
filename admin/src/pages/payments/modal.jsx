@@ -1,68 +1,79 @@
-import React, { useContext, useEffect } from 'react'
-import useFirebase from '../../hooks/useFirebase'
-import { LoadingContext } from '../../contexts/loadingContext'
 import { toast } from 'react-hot-toast'
+import axios from 'axios'
+
+import React, { useContext, useEffect } from 'react'
+
+import { LoadingContext } from '../../contexts/loadingContext'
 import { dateFormat } from '../../utils/dateTime'
-import { increment } from 'firebase/firestore'
 
 export default function Modal({ open, handleClose, id, getData }) {
 
     const { setLoading } = useContext(LoadingContext)
-    const { getIdDocumentRf, updateDocument } = useFirebase()
     const [data, setData] = React.useState({})
 
     const acceptPayment = async () => {
-        const res2 = await updateDocument('wallet', data.userRef.id, { wallet: increment(data.amount) }, setLoading)
 
-        if (res2.status === 400) {
-            toast.error("Error updating wallet")
+        if (!data.transactionHash) {
+            toast.error("Please enter transaction hash")
             return
         }
 
-        const res = await updateDocument('payments', id, {
-            status: "succeeded",
-            amount: data.amount,
+        if (!data.amount) {
+            toast.error("Please enter amount")
+            return
+        }
+
+        setLoading(true)
+        await axios.patch('transcation/accept-crypto', {
+            id: id,
             transactionHash: data.transactionHash,
-            screenshot: data.screenshot
-        }, setLoading)
+            amount: data.amount,
+            uid: data.user?._id
+        })
+            .then((res) => {
+                toast.success("Payment accepted successfully")
+                handleClose()
+                getData()
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => { setLoading(false) })
 
-        if (res.status === 400) {
-            toast.error("Error accepting payment")
-            return
-        }
-
-
-        toast.success("Payment accepted successfully")
-        handleClose()
-        getData()
     }
 
     const declinePayment = async () => {
-        const res = await updateDocument('payments', id, { status: "declined" }, setLoading)
+        setLoading(true)
 
-        if (res.status === 400) {
-            toast.error("Error declining payment")
-            return
-        }
-
-        toast.success("Payment declined successfully")
-        handleClose()
-        getData()
+        await axios.patch('transcation/reject-crypto', {
+            id: id,
+            uid: data.user?.id
+        })
+            .then((res) => {
+                console.log(res);
+                toast.success("Payment rejected successfully")
+                handleClose()
+                getData()
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => { setLoading(false) })
     }
 
     useEffect(() => {
         if (!id) return
 
         const getPayment = async () => {
-            const res = await getIdDocumentRf('payments', id, setLoading, ['userRef'])
+            await axios.get(`transcation/get-payment/${id}`)
+                .then((res) => {
+                    setData(res.data.transaction);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
 
-            if (res.status === 400) {
-                toast.error("Error getting payment")
-                handleClose()
-                return
-            }
 
-            setData(res.data)
         }
 
         getPayment()
@@ -97,18 +108,18 @@ export default function Modal({ open, handleClose, id, getData }) {
                         </div>
                         <div class="flex justify-between">
                             <span class="text-sm text-gray-900 dark:text-gray-100 font-bold">User:</span>
-                            <span class="text-sm text-gray-900 dark:text-gray-100"> {data.userRef?.name}</span>
+                            <span class="text-sm text-gray-900 dark:text-gray-100"> {data.user?.name}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-sm text-gray-900 dark:text-gray-100 font-bold">Email:</span>
-                            <span class="text-sm text-gray-900 dark:text-gray-100"> {data.userRef?.email}</span>
+                            <span class="text-sm text-gray-900 dark:text-gray-100"> {data.user?.email}</span>
                         </div>
                         {data.createdAt && <div class="flex justify-between">
                             <span class="text-sm text-gray-900 dark:text-gray-100 font-bold">Date:</span>
-                            <span class="text-sm text-gray-900 dark:text-gray-100"> {dateFormat(data.createdAt.toDate())}</span>
+                            <span class="text-sm text-gray-900 dark:text-gray-100"> {dateFormat(data.createdAt)}</span>
                         </div>}
                         <img
-                            src={data.screenshot}
+                            src={import.meta.env.VITE_SERVER_URL + data.screenshot}
                             alt="qr code"
                             className="w-1/2 mx-auto"
                         />
@@ -124,7 +135,7 @@ export default function Modal({ open, handleClose, id, getData }) {
                             placeholder="Enter amount"
                             className="border border-gray-200 rounded-lg px-3 py-2 w-full mb-2"
                             value={data.amount}
-                            onChange={(e) => setData({ ...data, amount: e.target.value })}
+                            onChange={(e) => setData({ ...data, amount: parseInt(e.target.value ? e.target.value : 0) })}
                         />
 
                         <label class="block text-sm">

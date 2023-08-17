@@ -17,6 +17,7 @@ const columns = [
 export default function UserTable({
   data,
   editUser,
+  updateStatus
 }) {
 
   return (
@@ -37,9 +38,21 @@ export default function UserTable({
                     <td data-label="date">{user.email}</td>
                     <td data-label="name" className=" capitalize ">{user.role}</td>
                     <td data-label="price">
-                      <button className="bg-blue-500 hover:bg-blue-700 text-white p-1 rounded">
-                        Block
-                      </button>
+                      {
+                        user.status === 'blocked' ?
+                          <button
+                            onClick={() => updateStatus(user._id, 'active', "user unblocked")}
+                            className="bg-blue-500 hover:bg-blue-700 text-white p-1 rounded">
+                            Unblock
+                          </button>
+                          :
+                          <button
+                            onClick={() => updateStatus(user._id, 'blocked', "user blocked")}
+                            className="bg-red-500 hover:bg-red-700 text-white p-1 rounded">
+                            Block
+                          </button>
+                      }
+
                     </td>
                   </tr>
                 ))

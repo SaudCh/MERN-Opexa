@@ -1,20 +1,23 @@
+import { Link } from "react-router-dom";
+import axios from "axios";
+
 import React, { useContext, useEffect } from "react";
 import "./index.css";
-import { Link } from "react-router-dom";
+
 import { LoadingContext } from "../../contexts/loadingContext";
-import { BsEmojiHeartEyes } from "react-icons/bs";
-import { MdArrowCircleUp } from "react-icons/md";
-import useFirebase from "../../hooks/useFirebase";
-import { where } from "firebase/firestore";
 import { dateFormat, timeFormat } from "../../utils/dateTime";
+
 const columns = [
   { headerName: "Payment ID" },
 
   {
-    headerName: "Date",
+    headerName: "Date/Time",
   },
   {
-    headerName: "Time",
+    headerName: "Name",
+  },
+  {
+    headerName: "Email",
   },
   {
     headerName: "Amount",
@@ -28,17 +31,17 @@ const columns = [
 export default function Payments() {
   const [data, setData] = React.useState([]);
   const { setLoading } = useContext(LoadingContext);
-  const { getDocuments } = useFirebase();
 
   const getProduct = async () => {
-    const res = await getDocuments("payments", setLoading, where("status", "==", "succeeded"));
-
-    if (res.status === 400) {
-      toast.error("Error getting payments");
-    }
-
-    setData(res.data);
-
+    setLoading(true);
+    await axios.get('transcation/all-payments?status=succeeded')
+      .then((res) => {
+        setData(res.data.transactions);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => { setLoading(false) })
   };
 
 
@@ -90,8 +93,9 @@ export default function Payments() {
 
                   >
                     <td data-label="id">{item.paymentId}</td>
-                    <td data-label="date">{dateFormat(item.createdAt.toDate())}</td>
-                    <td data-label="date">{timeFormat(item.createdAt.toDate())}</td>
+                    <td data-label="date">{dateFormat(item.createdAt)} {timeFormat(item.createdAt)}</td>
+                    <td data-label="name">{item.user.name}</td>
+                    <td data-label="name">{item.user.email}</td>
                     <td data-label="price">{item.amount}</td>
                     <td data-label="status" className="capitalize">{item.status}</td>
                   </tr>

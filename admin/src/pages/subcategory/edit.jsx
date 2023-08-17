@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { SelectInput, TextInput } from "../../components/InputFields";
-import { db } from "../../config/firebase";
-import { collection, getDoc, onSnapshot } from "firebase/firestore";
-import { doc, updateDoc } from "firebase/firestore";
-import { LoadingContext } from "../../contexts/loadingContext";
-import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import axios from "axios";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import { toast } from "react-hot-toast";
+
+import React, { useContext, useEffect, useState } from "react";
+
+import { SelectInput, TextInput } from "../../components/InputFields";
+import { LoadingContext } from "../../contexts/loadingContext";
 
 
 export default function EditCategory() {
@@ -46,12 +46,16 @@ export default function EditCategory() {
 
         setLoading(true)
 
-
-        const category = doc(db, "subcategories", id);
-
-        await updateDoc(category, {
-            name: data.name
-        });
+        await axios
+            .patch(`subcategory/${id}`, data)
+            .then((res) => {
+                toast.success("Sub Category Updated Successfully")
+                navigate("/subcategories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
 
         setLoading(false)
 
@@ -62,11 +66,6 @@ export default function EditCategory() {
 
         setLoading(true)
 
-        const category = doc(db, "subxcategories", id);
-
-        await updateDoc(category, {
-            inputs
-        });
 
         setLoading(false)
     }

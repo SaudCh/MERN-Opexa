@@ -2,9 +2,6 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SelectInput, TextInput } from "../../components/InputFields";
 import AddImage from "../../components/ImageInput";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
 import { LoadingContext } from "../../contexts/loadingContext";
 import axios from "axios";
 import useApi from "../../hooks/useApi";

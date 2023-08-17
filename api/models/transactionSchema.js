@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     type: { type: String, enum: ['deposit', 'withdrawal'], required: true },
     amount: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
@@ -15,7 +15,7 @@ const transactionSchema = new mongoose.Schema({
     clientSecret: { type: String },
     currency: { type: String },
     // for by hand cash transaction
-    rcptnum: { type: String },
+    // rcptnum: { type: String },
     // for crypto transaction
     cryptoAddress: { type: String },
     screenshot: { type: String },

@@ -35,7 +35,7 @@ export default function CryptoTable({ data, deleteCategory }) {
                     <td data-label="image">
                       <div className="flex items-center justify-end md:justify-center">
                         <img
-                          src={item.image}
+                          src={import.meta.env.VITE_SERVER_URL + item.image}
                           alt="category"
                           className="w-[80px] h-[80px] object-contain border rounded-full"
                         />

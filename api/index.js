@@ -58,6 +58,7 @@ app.use('/api/auth', require('./routes/authRouter'))
 app.use('/api/user', require('./routes/userRouter'))
 app.use('/api/chat', require('./routes/chatRouter'))
 app.use('/api/category', require('./routes/categoryRouter'))
+app.use("/api/crypto", require("./routes/cryptoRouter"));
 app.use('/api/subcategory', require('./routes/subcatergoryRouter'))
 app.use('/api/furthercategory', require('./routes/furthercategoryRouter'))
 app.use('/api/notification', require('./routes/notificationRouter'))
@@ -66,17 +67,17 @@ app.use('/api/swiper', require('./routes/swiperRouter'))
 app.use('/api/wishlist', require('./routes/wishlistRouter'))
 app.use('/api', require('./routes/'))
 
-app.use(express.static(path.join(__dirname, "../admin/dist")))
-app.get('/*', function (req, res) {
-    res.sendFile(
-        path.resolve(__dirname, "../admin/dist/index.html"),
-        function (err) {
-            if (err) {
-                res.status(500).send(err);
-            }
-        }
-    )
-})
+// app.use(express.static(path.join(__dirname, "../admin/dist")))
+// app.get('/*', function (req, res) {
+//     res.sendFile(
+//         path.resolve(__dirname, "../admin/dist/index.html"),
+//         function (err) {
+//             if (err) {
+//                 res.status(500).send(err);
+//             }
+//         }
+//     )
+// })
 
 app.use((req, res, next) => {
     const error = new HttpError("Could not find this route.", 404);

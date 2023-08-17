@@ -1,14 +1,12 @@
+import axios from "axios";
+import { Link } from "react-router-dom";
+
 import React, { useContext, useEffect } from "react";
 import "./index.css";
-import { Link } from "react-router-dom";
 import { LoadingContext } from "../../contexts/loadingContext";
-import { BsEmojiHeartEyes } from "react-icons/bs";
-import { MdArrowCircleUp } from "react-icons/md";
-import useFirebase from "../../hooks/useFirebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { dateFormat, timeFormat } from "../../utils/dateTime";
 import Modal from "./modal";
-import { db } from "../../config/firebase";
+
 const columns = [
     { headerName: "Payment ID" },
 
@@ -30,33 +28,21 @@ const columns = [
 export default function Payments() {
     const [data, setData] = React.useState([]);
     const { setLoading } = useContext(LoadingContext);
-    const { getDocuments } = useFirebase();
     const [modal, setModal] = React.useState(false);
     const [id, setId] = React.useState("")
 
 
     const getProduct = async () => {
-        // const res = await getDocuments("payments", setLoading, (where("status", "==", "pending"), where("method", "==", "crypto")));
-
-        // if (res.status === 400) {
-        //     toast.error("Error getting payments");
-        // }
-
-        let documents = [];
-        const q = query(collection(db, 'payments'), where("status", "==", "pending"), where("method", "==", "crypto"));
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach(async (doc) => {
-            documents.push({
-                id: doc.id,
-                ...doc.data()
+        setLoading(true);
+        await axios.get('transcation/all-payments?status=pending&paymentMethod=crypto')
+            .then((res) => {
+                setData(res.data.transactions);
             })
-        });
-
-        setData(documents);
-
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => { setLoading(false) })
     };
-
 
     useEffect(() => {
         getProduct();
@@ -103,12 +89,12 @@ export default function Payments() {
                                         key={item.paymentId}
                                         onClick={() => {
                                             setModal(true)
-                                            setId(item.id)
+                                            setId(item._id)
                                         }}
                                     >
                                         <td data-label="id">{item.paymentId}</td>
-                                        <td data-label="date">{dateFormat(item.createdAt.toDate())}</td>
-                                        <td data-label="date">{timeFormat(item.createdAt.toDate())}</td>
+                                        <td data-label="date">{dateFormat(item.createdAt)}</td>
+                                        <td data-label="date">{timeFormat(item.createdAt)}</td>
                                         <td data-label="price">{item.amount}</td>
                                         <td data-label="status" className="capitalize">{item.status}</td>
                                     </tr>

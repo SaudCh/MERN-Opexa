@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 import React, { useContext, useEffect, useState } from "react";
 import UserTable from "../../components/tables/users";
@@ -10,36 +11,39 @@ export default function Users() {
   const [data, setData] = useState([]);
   const { setLoading } = useContext(LoadingContext)
 
+  const getData = async () => {
+    setLoading(true)
+    await axios
+      .get("user/users?role=user")
+      .then((res) => {
+        setData(res.data.users)
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => { setLoading(false) })
+  }
+
   useEffect(() => {
-
-    const getData = async () => {
-      setLoading(true)
-      await axios
-        .get("user/users?role=user")
-        .then((res) => {
-          setData(res.data.users)
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => { setLoading(false) })
-    }
-
     getData()
 
   }, [])
 
-  const blockUser = async (id, cid) => {
-    setLoading(true)
+  const updateStatus = async (id, status, message) => {
 
+    setLoading(true)
     await axios
-      .delete("user/" + id)
+      .patch("user/update-status", {
+        id: id,
+        status: status
+      })
       .then((res) => {
-        toast.success("Further Category Deleted Successfully")
-        setData(data.filter((item) => item._id !== id))
+        console.log(res);
+        toast.success(message)
+        getData()
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       })
       .finally(() => { setLoading(false) })
 
@@ -53,6 +57,7 @@ export default function Users() {
       </div>
       <UserTable
         data={data}
+        updateStatus={updateStatus}
       />
     </div>
   );

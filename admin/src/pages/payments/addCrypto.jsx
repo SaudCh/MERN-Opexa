@@ -1,17 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 import React, { useContext, useState } from "react";
 
 import { TextInput } from "../../components/InputFields";
 import AddImage from "../../components/ImageInput";
 import { LoadingContext } from "../../contexts/loadingContext";
-import useFirebase from "../../hooks/useFirebase";
+import useApi from "../../hooks/useApi";
 
 
 export default function AddCrypto() {
 
-    const { uploadImage, addDocument } = useFirebase()
+    const { uploadImage } = useApi()
     const { setLoading } = useContext(LoadingContext)
     const [data, setData] = useState({
         name: "",
@@ -30,27 +31,27 @@ export default function AddCrypto() {
         const errors = Validator(data, image)
         setErrors(errors)
         if (Object.keys(errors).length > 0) return
-        setLoading(true)
 
-        const res = await uploadImage(image)
+        const res = await uploadImage('image', image, setLoading)
 
-        if (res.status === 400) {
-            toast.error("Error uploading image")
-            return
-        }
+        if (res.status === 400) return
 
-        const res1 = await addDocument("crypto", { ...data, image: res.data })
-
-        console.log(res1)
-
-        if (res1.status === 200) {
-            toast.success("Crypto Currency added successfully")
-            navigate("/crypto")
-        } else {
-            toast.error("Error adding crypto currency")
-        }
-
-        setLoading(false)
+        await axios.post("crypto", {
+            name: data.name,
+            image: res.image,
+            address: data.address,
+        })
+            .then((res) => {
+                console.log(res.data);
+                toast.success("Crypto added successfully");
+                navigate("/crypto");
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setLoading(false)
+            })
 
     }
 
@@ -60,7 +61,7 @@ export default function AddCrypto() {
                 <h1 className=" text-2xl font-semibold mr-2">Add Crypto Currency</h1>
 
                 <Link
-                    to="/categories"
+                    to="/crypto"
                     className="bg-blue-500 text-white px-2 py-1 rounded-md"
                 >
                     All

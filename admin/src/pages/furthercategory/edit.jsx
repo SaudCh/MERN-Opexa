@@ -1,14 +1,12 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import React, { useContext, useEffect, useState } from "react";
-import { SelectInput, TextInput } from "../../components/InputFields";
-import { db } from "../../config/firebase";
-import { collection, getDoc, onSnapshot, query, where } from "firebase/firestore";
-import { doc, updateDoc } from "firebase/firestore";
+
 import { LoadingContext } from "../../contexts/loadingContext";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import { SelectInput, TextInput } from "../../components/InputFields";
 
 
 export default function EditFurtherCategory() {
@@ -63,12 +61,6 @@ export default function EditFurtherCategory() {
         e.preventDefault()
 
         setLoading(true)
-
-        const category = doc(db, "furthercategories", id);
-
-        await updateDoc(category, {
-            inputs
-        });
 
         setLoading(false)
     }

@@ -1,31 +1,28 @@
 import { Link } from "react-router-dom";
-import { where } from "firebase/firestore";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 import React, { useContext, useEffect, useState } from "react";
 
 import { LoadingContext } from "../../contexts/loadingContext";
 import CryptoTable from "../../components/tables/Crypto";
-import useFirebase from "../../hooks/useFirebase";
-
-// import axios from "axios";
 
 export default function Categories() {
 
     const [data, setData] = useState([])
     const { setLoading } = useContext(LoadingContext)
-    const { getDocuments, updateDocument } = useFirebase()
 
     const getData = async () => {
-        const res = await getDocuments("crypto", setLoading, where("isDeleted", "==", false))
 
-        if (res.status === 400) {
-            toast.error("Error fetching data")
-            return
-        }
-
-        setData(res.data)
-
+        setLoading(true)
+        await axios.get("crypto")
+            .then((res) => {
+                setData(res.data.coins)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
     }
 
     useEffect(() => {
@@ -35,10 +32,17 @@ export default function Categories() {
     }, [])
 
     const deleteCategory = async (id) => {
-        await updateDocument("crypto", id, { isDeleted: true }, setLoading)
 
-        getData()
-
+        setLoading(true)
+        await axios.delete(`crypto/${id}`)
+            .then((res) => {
+                toast.success("Crypto deleted successfully")
+                setData(data.filter((item) => item._id !== id))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
     }
 
     return (
