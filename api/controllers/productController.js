@@ -130,10 +130,26 @@ const deleteProduct = async (req, res, next) => {
     res.status(200).json({ product })
 }
 
+const myProducts = async (req, res, next) => {
+    const { userId } = req.params
+
+    let products
+
+    try {
+        products = await productSchema.find({ user: userId, isDeleted: false })
+    } catch (err) {
+        const error = new HttpError(err.message, 500)
+        return next(error)
+    }
+
+    res.status(200).json({ products })
+}
+
 module.exports = {
     createProduct,
     getProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    myProducts
 }

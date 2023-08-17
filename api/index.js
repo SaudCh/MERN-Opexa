@@ -53,7 +53,7 @@ const io = socketIo(server, {
 global.io = io;
 require("./sockets/socketManager")(io);
 
-// app.use('/api/retreat', require('./routes/retreatRouter'))
+app.use('/api/product', require('./routes/productRouter'))
 app.use('/api/auth', require('./routes/authRouter'))
 app.use('/api/user', require('./routes/userRouter'))
 app.use('/api/chat', require('./routes/chatRouter'))
