@@ -13,7 +13,7 @@ const getWishlist = async (req, res, next) => {
 
         if (!user.wishlist.length) return res.status(200).json({ wishlist: [] })
 
-        const wishlist = await productSchema.find({ _id: { $in: user.wishlist }, isDeleted: false }).populate("host")
+        const wishlist = await productSchema.find({ _id: { $in: user.wishlist }, isDeleted: false }).populate("user")
 
         res.status(200).json({ wishlist })
 

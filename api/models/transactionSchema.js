@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
-    type: { type: String, enum: ['deposit', 'withdrawal'], required: true },
+    type: { type: String, enum: ['deposit', 'withdrawal', 'debit'], required: true },
     amount: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
     description: { type: String },

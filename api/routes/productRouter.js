@@ -4,7 +4,11 @@ const {
     getProductById,
     updateProduct,
     deleteProduct,
-    myProducts
+    myProducts,
+    approveProduct,
+    rejectProduct,
+    blockProduct,
+    unblockProduct
 } = require('../controllers/productController')
 
 const router = require('express').Router()
@@ -12,9 +16,15 @@ const checkAuth = require('../middleware/checkAuth')
 
 router.post('/', createProduct)
 router.get('/', getProducts)
-router.get('/:id', getProductById)
-router.patch('/:id', updateProduct)
+router.get('/:productId', getProductById)
+router.patch('/:productId', updateProduct)
 router.delete('/:id', deleteProduct)
+router.patch('/approve/:productId', approveProduct)
+router.patch('/reject/:productId', rejectProduct)
+router.patch('/block/:productId', blockProduct)
+router.patch('/unblock/:productId', unblockProduct)
+
+
 
 router.use(checkAuth)
 

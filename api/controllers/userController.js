@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const transporter = require('../middleware/nodemailer')
 const notificationSchema = require('../models/notificationSchema')
+const productSchema = require('../models/productSchema')
 
 const getAllUsers = async (req, res, next) => {
     let users
@@ -205,6 +206,24 @@ const removeInvitation = async (req, res, next) => {
 
 }
 
+const sellerProfile = async (req, res, next) => {
+    try {
+        const { id } = req.params
+
+        const user = await userSchema.findById(id, { password: 0, status: 0 })
+
+        if (!user) return next(new HttpError("User not found", 404))
+
+        const products = await productSchema.find({ user: id, status: 'active' })
+
+        res.status(200).json({ user: user, products: products })
+
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+
+}
+
 module.exports = {
     getAllUsers,
     getUserById,
@@ -212,5 +231,6 @@ module.exports = {
     acceptInvitation,
     removeInvitation,
     updateStatus,
-    getUserByEmail
+    getUserByEmail,
+    sellerProfile
 }

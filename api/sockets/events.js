@@ -3,6 +3,7 @@ const Events = {
     DISCONNECT: 'disconnect',
     CHAT: {
         MESSAGE: 'chat:message',
+        ALL_MESSAGES: 'chat:allchats',
     },
 };
 

@@ -26,6 +26,7 @@ import OfflineTransaction from "../pages/payments/offlineTransaction";
 import Crypto from "../pages/payments/crypto";
 import AddCrypto from "../pages/payments/addCrypto";
 import EditCrypto from "../pages/payments/editCrypto";
+import ProductsRequest from "../pages/products/requests";
 
 const Layout = lazy(() => import("./layout"));
 
@@ -65,6 +66,10 @@ export default function AppRouter() {
             <Route
               path="/product/add"
               element={<ProtectedRoute component={<AddProduct />} />}
+            />
+            <Route
+              path="/products/requests"
+              element={<ProtectedRoute component={<ProductsRequest />} />}
             />
             <Route
               path="/product/:id"

@@ -22,10 +22,11 @@ const SocketManger = (io) => {
     });
 };
 
-const sendMessage = (userId, message) => {
+const sendMessage = (userId, message, chat) => {
     const socketId = users[userId]?.socketId;
     // console.log(users);
     io.to(socketId).emit(EVENTS.CHAT.MESSAGE, message);
+    io.to(socketId).emit(EVENTS.CHAT.ALL_MESSAGES, chat);
     console.log('message sent');
 };
 

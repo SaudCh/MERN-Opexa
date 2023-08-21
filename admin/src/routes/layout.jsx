@@ -201,7 +201,7 @@ function Layout() {
               className={` text-base font-md flex-1 
             ${!open && "hidden"}`}
             >
-              Orders
+              Deals
             </span>
           </Link>
 

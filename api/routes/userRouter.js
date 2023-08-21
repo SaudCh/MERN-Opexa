@@ -4,7 +4,8 @@ const { getAllUsers,
     acceptInvitation,
     removeInvitation,
     updateStatus,
-    getUserByEmail
+    getUserByEmail,
+    sellerProfile
 } = require('../controllers/userController')
 
 const router = require('express').Router()
@@ -13,6 +14,7 @@ const { restrictTo } = require('../middleware/restrictRoute')
 
 
 router.post('/accept-editor', acceptInvitation)
+router.get('/seller-profile/:id', sellerProfile)
 
 router.use(checkAuth)
 
