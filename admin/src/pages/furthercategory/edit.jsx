@@ -60,9 +60,18 @@ export default function EditFurtherCategory() {
     const submitInput = async (e) => {
         e.preventDefault()
 
-        setLoading(true)
-
-        setLoading(false)
+        await axios
+            .patch(`furthercategory/${id}`, {
+                inputs
+            })
+            .then((res) => {
+                toast.success("Further Category Updated Successfully")
+                navigate("/furthercategories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
     }
 
     useEffect(() => {

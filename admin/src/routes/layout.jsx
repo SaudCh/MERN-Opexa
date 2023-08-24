@@ -7,6 +7,7 @@ import LoadingSpinner from "../components/spinner";
 import { LoadingContext } from "../contexts/loadingContext";
 import { BsArrowLeft } from "react-icons/bs";
 import { MdOutlineDashboard, MdPayment, MdLogout } from "react-icons/md";
+import { ImMap } from "react-icons/im";
 import { GrUnorderedList } from "react-icons/gr";
 import { RiProductHuntLine } from "react-icons/ri";
 import { BiUser, BiCategoryAlt } from "react-icons/bi";
@@ -220,6 +221,26 @@ function Layout() {
           >
             <MdPayment />
           </DropDown>
+
+          {/* Orders */}
+          <Link
+            className={` rounded-md text-gray-300  text-sm flex items-center gap-x-4 cursor-pointer hover:bg-light-white py-4 p-2`}
+            to="/areas"
+          >
+            <span className="text-2xl block float-left">
+              <ImMap
+                className=""
+              />
+            </span>
+            <span
+              className={` text-base font-md flex-1 
+            ${!open && "hidden"}`}
+            >
+              Areas
+            </span>
+          </Link>
+
+
 
           {/* Logout */}
           <li

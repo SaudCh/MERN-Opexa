@@ -115,7 +115,7 @@ const updateSubcategory = async (req, res, next) => {
 
         }
 
-        await subcategorySchema.findByIdAndUpdate(id, { name, inputs, category })
+        await subcategorySchema.findByIdAndUpdate(id, req.body)
 
         res.status(200).json({ message: 'Subcategory updated successfully' })
 

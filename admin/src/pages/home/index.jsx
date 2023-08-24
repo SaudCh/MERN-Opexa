@@ -5,7 +5,7 @@ import Summary from "../../components/home/Summary";
 export default function Home() {
   return (
     <div class="grid grid-cols-3 grid-flow-col gap-4  px-3">
-      <div className="col-span-2">
+      {/* <div className="col-span-2">
         <div class=" ...  m-5  bg-white" style={{ maxHeight: "70%" }}>
           <div className="shadow  py-5 " style={{ paddingBottom: "70px" }}>
             <div>
@@ -56,7 +56,7 @@ export default function Home() {
         <div class="m-5 ">
           <Summary />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

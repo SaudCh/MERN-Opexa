@@ -26,7 +26,7 @@ const sendMessage = (userId, message, chat) => {
     const socketId = users[userId]?.socketId;
     // console.log(users);
     io.to(socketId).emit(EVENTS.CHAT.MESSAGE, message);
-    io.to(socketId).emit(EVENTS.CHAT.ALL_MESSAGES, chat);
+    if (chat) io.to(socketId).emit(EVENTS.CHAT.ALL_MESSAGES, chat);
     console.log('message sent');
 };
 

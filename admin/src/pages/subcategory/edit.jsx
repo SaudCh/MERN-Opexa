@@ -62,10 +62,25 @@ export default function EditCategory() {
     }
 
     const submitInput = async (e) => {
+
+        console.log(inputs)
+
         e.preventDefault()
 
         setLoading(true)
 
+        await axios
+            .patch(`subcategory/${id}`, {
+                inputs: inputs
+            })
+            .then((res) => {
+                toast.success("Sub Category Updated Successfully")
+                navigate("/subcategories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => { setLoading(false) })
 
         setLoading(false)
     }
@@ -78,7 +93,8 @@ export default function EditCategory() {
                 .get(`subcategory/${id}`)
                 .then((res) => {
                     setData(res.data.subcategory)
-                    setInput(res.data.category.inputs)
+                    setInput(res.data.subcategory.inputs)
+                    // setInput(res.data.category.inputs)
                 })
                 .catch((err) => {
                 })

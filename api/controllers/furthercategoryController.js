@@ -76,7 +76,7 @@ const updateFurtherCategory = async (req, res, next) => {
     }
 
     try {
-        await furthercategorySchema.findByIdAndUpdate(furthercategoryId, { name, inputs })
+        await furthercategorySchema.findByIdAndUpdate(furthercategoryId, req.body)
     } catch (err) {
         return (new HttpError(err.message, 500))
     }

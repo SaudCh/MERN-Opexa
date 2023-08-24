@@ -16,11 +16,13 @@ const schema = mongoose.Schema
 const productSchema = schema({
     title: { type: String, required: true },
     description: { type: String },
-    location: { type: Object, required: true },
     city: { type: String, },
     state: { type: String, },
-    country: { type: String, },
+    country: { type: String, default: "Pakistan" },
+    area: { type: String, },
+    stateCode: { type: String, },
     inputs: [{ type: Object }],
+    inputsData: { type: Object },
     images: [{ type: String, }],
     status: { type: String, default: "pending" },
     isDeleted: { type: Boolean, default: false },
@@ -31,6 +33,7 @@ const productSchema = schema({
     price: { type: Number, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     expert: { type: Boolean, default: false },
+
 }, {
     timestamps: true
 })

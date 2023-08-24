@@ -62,7 +62,8 @@ export default function EditCategory() {
 
         await axios.patch(`category/${id}`, {
             name: data.name,
-            image: imageUrl
+            image: imageUrl,
+            location: data.location
         })
             .then((res) => {
                 toast.success(res.data.message)
@@ -81,8 +82,19 @@ export default function EditCategory() {
         e.preventDefault()
 
         setLoading(true)
-
-        setLoading(false)
+        await axios.patch(`category/${id}`, {
+            inputs: inputs
+        })
+            .then((res) => {
+                toast.success("Inputs Updated")
+                navigate("/categories")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     useEffect(() => {
@@ -144,6 +156,16 @@ export default function EditCategory() {
                         value={data.name}
                         onChange={(e) => setData({ ...data, name: e.target.value })}
                     />
+
+                    <div class="flex items-center mb-4">
+                        <input
+                            id="default-checkbox"
+                            type="checkbox"
+                            checked={data.location}
+                            onChange={(e) => setData({ ...data, location: !data.location })}
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Location Enabled</label>
+                    </div>
 
                     <button
                         type="submit"

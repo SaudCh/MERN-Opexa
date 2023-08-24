@@ -27,6 +27,9 @@ import Crypto from "../pages/payments/crypto";
 import AddCrypto from "../pages/payments/addCrypto";
 import EditCrypto from "../pages/payments/editCrypto";
 import ProductsRequest from "../pages/products/requests";
+import Areas from "../pages/area";
+import AddArea from "../pages/area/add";
+import EditArea from "../pages/area/edit";
 
 const Layout = lazy(() => import("./layout"));
 
@@ -162,6 +165,22 @@ export default function AppRouter() {
               path="/crypto/:cid"
               element={<ProtectedRoute component={<EditCrypto />} />}
             />
+
+            {/* Category */}
+            <Route
+              path="/areas"
+              element={<ProtectedRoute component={<Areas />} />}
+            />
+            <Route
+              path="/area/add"
+              element={<ProtectedRoute component={<AddArea />} />}
+            />
+
+            <Route
+              path="/area/:id"
+              element={<ProtectedRoute component={<EditArea />} />}
+            />
+
           </Route>
         </Routes>
       </div>

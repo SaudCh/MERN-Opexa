@@ -15,7 +15,13 @@ const createProduct = async (req, res, next) => {
         subcategory,
         furthercategory,
         user,
-        expert
+        expert,
+        inputs,
+        inputsData,
+        city,
+        state,
+        area,
+        stateCode,
     } = req.body
 
     const usr = await userSchema.findById(user)
@@ -66,7 +72,69 @@ const createProduct = async (req, res, next) => {
         subcategory,
         furthercategory,
         user,
-        expert
+        expert,
+        inputs,
+        inputsData,
+        city,
+        state,
+        area,
+        stateCode,
+    })
+
+    try {
+        await product.save()
+        res.status(201).json({ product })
+    } catch (err) {
+        const error = new HttpError(err.message, 500)
+        return next(error)
+    }
+}
+
+const notForSale = async (req, res, next) => {
+    const {
+        title,
+        description,
+        price,
+        images,
+        location,
+        category,
+        subcategory,
+        furthercategory,
+        user,
+        expert,
+        inputs,
+        inputsData,
+        city,
+        state,
+        area,
+        stateCode,
+    } = req.body
+
+    const usr = await userSchema.findById(user)
+
+    if (!usr) {
+        const error = new HttpError("User not found", 404)
+        return next(error)
+    }
+
+    const product = new productSchema({
+        title,
+        description,
+        price,
+        images,
+        location,
+        category,
+        subcategory,
+        furthercategory,
+        user,
+        expert,
+        inputs,
+        inputsData,
+        city,
+        state,
+        area,
+        stateCode,
+        status: 'not-for-sale'
     })
 
     try {
@@ -111,12 +179,14 @@ const getProducts = async (req, res, next) => {
 }
 
 const getProductById = async (req, res, next) => {
+    console.log("Get product by id")
     const { productId } = req.params
+    console.log(productId)
 
     let product
 
     try {
-        product = productSchema.findById(productId)
+        product = await productSchema.findById(productId).populate('user', { name: 1, email: 1, createdAt: 1, avatar: 1 }).populate('category').populate('subcategory').populate('furthercategory')
     } catch (err) {
         const error = new HttpError(err.message, 500)
         return next(error)
@@ -197,10 +267,14 @@ const deleteProduct = async (req, res, next) => {
 const myProducts = async (req, res, next) => {
     const { userId } = req.params
 
+    const { status = 'active,pending,blocked' } = req.query
+
+
+
     let products
 
     try {
-        products = await productSchema.find({ user: userId, isDeleted: false }).populate('user', { name: 1, email: 1, createdAt: 1, avatar: 1 }).populate('category').populate('subcategory').populate('furthercategory')
+        products = await productSchema.find({ user: userId, isDeleted: false, status: status.split(',') }).populate('user', { name: 1, email: 1, createdAt: 1, avatar: 1 }).populate('category').populate('subcategory').populate('furthercategory')
     } catch (err) {
         const error = new HttpError(err.message, 500)
         return next(error)
@@ -320,5 +394,6 @@ module.exports = {
     approveProduct,
     rejectProduct,
     blockProduct,
-    unblockProduct
+    unblockProduct,
+    notForSale
 }

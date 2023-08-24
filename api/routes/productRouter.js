@@ -8,7 +8,8 @@ const {
     approveProduct,
     rejectProduct,
     blockProduct,
-    unblockProduct
+    unblockProduct,
+    notForSale
 } = require('../controllers/productController')
 
 const router = require('express').Router()
@@ -23,7 +24,7 @@ router.patch('/approve/:productId', approveProduct)
 router.patch('/reject/:productId', rejectProduct)
 router.patch('/block/:productId', blockProduct)
 router.patch('/unblock/:productId', unblockProduct)
-
+router.post('/not-for-sale', notForSale)
 
 
 router.use(checkAuth)

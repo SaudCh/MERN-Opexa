@@ -54,8 +54,11 @@ global.io = io;
 require("./sockets/socketManager")(io);
 
 app.use('/api/product', require('./routes/productRouter'))
+app.use('/api/bid', require('./routes/bidRouter'))
+app.use('/api/area', require('./routes/areaRouter'))
 app.use('/api/auth', require('./routes/authRouter'))
 app.use('/api/user', require('./routes/userRouter'))
+app.use('/api/device', require('./routes/deviceRouter'))
 app.use('/api/chat', require('./routes/chatRouter'))
 app.use('/api/category', require('./routes/categoryRouter'))
 app.use("/api/crypto", require("./routes/cryptoRouter"));

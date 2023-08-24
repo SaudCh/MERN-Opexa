@@ -214,7 +214,7 @@ const sellerProfile = async (req, res, next) => {
 
         if (!user) return next(new HttpError("User not found", 404))
 
-        const products = await productSchema.find({ user: id, status: 'active' })
+        const products = await productSchema.find({ user: id, status: 'active' }).populate('category').populate('subcategory').populate('furthercategory')
 
         res.status(200).json({ user: user, products: products })
 
