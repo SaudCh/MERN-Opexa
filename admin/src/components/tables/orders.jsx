@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import { LoadingContext } from "../../contexts/loadingContext";
 
 const columns = [
-  { headerName: "Order ID" },
-
   {
     headerName: "Item",
   },
@@ -19,19 +17,9 @@ const columns = [
     headerName: "Status",
   },
 ];
-export default function OrderTable() {
-  const [data, setData] = React.useState([]);
-  const { setIsLoading } = useContext(LoadingContext);
-
-  useEffect(() => {
-    const getProduct = async () => {
-      setIsLoading(true);
-
-      setIsLoading(false);
-    };
-
-    getProduct();
-  }, []);
+export default function OrderTable({
+  orders,
+}) {
 
   return (
     <div>
@@ -44,23 +32,30 @@ export default function OrderTable() {
               ))}
             </thead>
             <tbody>
-              <tr>
-                <td data-label="id">
-                  <Link to="/order/id">#268FCDs</Link>
-                </td>
-                <td data-label="date">
-                  <Link to="/order/id">Car</Link>
-                </td>
-                <td data-label="name">
-                  <Link to="/order/id">Abid</Link>
-                </td>
-                <td data-label="price">
-                  <Link to="/order/id">Daud</Link>
-                </td>
-                <td data-label="status">
-                  <Link to="/order/id">Active</Link>
-                </td>
-              </tr>
+              {
+                orders.map((order) => (
+                  <tr>
+                    <td data-label="date">
+                      <Link to="/order/id">
+                        {order?.product?.title}
+                      </Link>
+                    </td>
+                    <td data-label="name">
+                      <Link to="/order/id">
+                        {order?.buyer?.name}
+                      </Link>
+                    </td>
+                    <td data-label="price">
+                      <Link to="/order/id">
+                        {order?.seller?.name}
+                      </Link>
+                    </td>
+                    <td data-label="status">
+                      <Link to="/order/id">{order.status}</Link>
+                    </td>
+                  </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>

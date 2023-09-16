@@ -145,6 +145,20 @@ const getActiveBids = async (req, res, next) => {
     }
 }
 
+const getActiveBidsAdmin = async (req, res, next) => {
+
+    try {
+        const bids = await bidSchema.find({
+            status: { $in: ['accepted', 'completed', 'issued'] }
+        }).populate('product').populate('buyer', { name: 1, avatar: 1 }).populate("offeredProducts").populate('seller', { name: 1, avatar: 1 });
+
+        res.status(200).json({ bids });
+    } catch (err) {
+        const error = new HttpError(err.message, 500);
+        return next(error);
+    }
+}
+
 const getBidsByBuyer = async (req, res, next) => {
     const { buyerId } = req.params;
     try {
@@ -481,5 +495,6 @@ module.exports = {
     sendAMessage,
     deleteBid,
     getBidsByBuyer,
-    getActiveBids
+    getActiveBids,
+    getActiveBidsAdmin
 }

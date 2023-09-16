@@ -10,7 +10,8 @@ const {
     sendAMessage,
     deleteBid,
     getBidsByBuyer,
-    getActiveBids
+    getActiveBids,
+    getActiveBidsAdmin
 } = require('../controllers/bidController');
 
 const router = require('express').Router();
@@ -18,6 +19,7 @@ const router = require('express').Router();
 router.get('/', getBids);
 router.get('/buyer/:buyerId', getBidsByBuyer);
 router.get('/active', getActiveBids);
+router.get('/active/admin', getActiveBidsAdmin);
 router.get('/:bidId', getBidById);
 router.post('/', createBid);
 router.patch('/accept/:bidId', acceptOffer);
